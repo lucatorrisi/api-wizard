@@ -1,0 +1,17 @@
+{
+  "host": "host.com",
+  "basePath": "/v1",
+  "schemes": [ "http", "https" ],
+  "paths": [
+    {
+      "name": "AddPet",
+      "route": "/pet/add",
+      "method": "post",
+      "consumes": [ "application/json" ],
+      "security": {
+        "type": "APIKey",
+        "key": "xyz"
+      }
+    }
+  ]
+}
