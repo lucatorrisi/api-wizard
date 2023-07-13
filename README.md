@@ -1,6 +1,4 @@
-<p align="center">
-  <img src="logo.svg" />
-</p>
+![Logo](https://raw.githubusercontent.com/lucatorrisi/api-wizard/6b057ad1aea91e594eeeeb53d2e1ce2cbfbf95f4/logo.svg)
 
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 ![Build Status](https://img.shields.io/travis/your-username/APIWizard)
@@ -24,7 +22,7 @@ var apiClient = new APIClientBuilder()
 
 var forecast = await apiClient.DoRequestAsync<Forecast>("forecast", null, CancellationToken.None);
 ```
-### ASP NET Application
+### ASP Net Application DI
 ```csharp
 var apiWizard = new APIClientBuilder()
     .WithConfiguration(Configuration.GetSection("APIWizard:Schema"))
