@@ -1,14 +1,17 @@
 ﻿using APIWizard.Constants;
 using APIWizard.Enums;
+using APIWizard.Extensions;
 using APIWizard.Model;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http.Json;
 using System.Text;
 using System.Threading.Tasks;
+using Path = APIWizard.Model.Path;
 
 namespace APIWizard.Builders
 {
@@ -31,7 +34,19 @@ namespace APIWizard.Builders
         }
         public APIClient Build()
         {
-            return new APIClient(HttpClientDefaults.PooledConnectionLifetime, schema);
+            return new APIClient(HttpClientDefaults.PooledConnectionLifetime, schema, CreateRequestsDictionary());
+        }
+
+        private ConcurrentDictionary<string, HttpRequestMessage> CreateRequestsDictionary()
+        {
+            ConcurrentDictionary<string, HttpRequestMessage> requests = new ConcurrentDictionary<string, HttpRequestMessage>();
+
+            foreach (Path path in schema.Paths)
+            {
+                requests.TryAdd(path.Name, path.ToHttpRequestMessage(schema.Host, schema.BasePath, schema.Schemes));
+            }
+
+            return requests;
         }
     }
 }

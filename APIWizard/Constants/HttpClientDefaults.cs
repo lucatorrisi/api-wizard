@@ -9,5 +9,8 @@ namespace APIWizard.Constants
     public static class HttpClientDefaults
     {
         public static TimeSpan PooledConnectionLifetime = TimeSpan.FromMinutes(2);
+        
+        public const string HttpsSchema = "https";
+        public const string HttpSchema = "http";
     }
 }

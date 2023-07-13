@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace APIWizard.Model
 {
-    internal class Paths
+    internal class Path
     {
         public string Name { get; set; }
         public string Route { get; set; }
         public string Method { get; set; }
-        public string[] Consumes { get; set; }
+        public string Consumes { get; set; }
         public Security Security { get; set; }
     }
 }

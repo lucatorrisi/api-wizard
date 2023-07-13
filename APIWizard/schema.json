@@ -1,13 +1,13 @@
 {
-  "host": "host.com",
+  "host": "api.open-meteo.com",
   "basePath": "/v1",
   "schemes": [ "http", "https" ],
   "paths": [
     {
-      "name": "AddPet",
-      "route": "/pet/add",
-      "method": "post",
-      "consumes": [ "application/json" ],
+      "name": "forecast",
+      "route": "forecast?latitude=52.52&longitude=13.41",
+      "method": "get",
+      "consumes": null,
       "security": {
         "type": "APIKey",
         "key": "xyz"
