@@ -5,11 +5,11 @@ VisualStudioVersion = 17.6.33815.320
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "APIWizard", "APIWizard\APIWizard.csproj", "{34DE02A8-B281-4BB1-B897-57DE4435D402}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APIWizard.Test.Common", "APIWizard.Test.Common\APIWizard.Test.Common.csproj", "{0426F951-689D-4F0C-95ED-A4F0F73490B3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APIWizard.Sample.Common", "APIWizard.Sample.Common\APIWizard.Sample.Common.csproj", "{0426F951-689D-4F0C-95ED-A4F0F73490B3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APIWizard.Test.Console", "APIWizard.Test.Console\APIWizard.Test.Console.csproj", "{D8182138-5AA1-492D-9F42-BDB9DD56667E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APIWizard.Sample.Console", "APIWizard.Sample.Console\APIWizard.Sample.Console.csproj", "{D8182138-5AA1-492D-9F42-BDB9DD56667E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APIWizard.Test.ASPNETCore", "APIWizard.Test.ASPNETCore\APIWizard.Test.ASPNETCore.csproj", "{459DBA6C-D04B-4746-BB05-C061E596C146}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APIWizard.Sample.ASPNETCore", "APIWizard.Sample.ASPNETCore\APIWizard.Sample.ASPNETCore.csproj", "{459DBA6C-D04B-4746-BB05-C061E596C146}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

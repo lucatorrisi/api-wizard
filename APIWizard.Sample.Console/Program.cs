@@ -1,5 +1,5 @@
 ﻿using APIWizard.Builders;
-using APIWizard.Test.Common;
+using APIWizard.Sample.Common;
 
 var apiClient = new APIClientBuilder()
     .WithConfigurationFile("schema.json")

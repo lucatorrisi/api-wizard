@@ -8,8 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\APIWizard.Test.Common\APIWizard.Test.Common.csproj" />
-    <ProjectReference Include="..\APIWizard\APIWizard.csproj" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
 
   <ItemGroup>
@@ -17,7 +16,7 @@
       <HintPath>..\APIWizard\bin\Debug\net7.0\APIWizard.dll</HintPath>
     </Reference>
     <Reference Include="APIWizard.Test.Common">
-      <HintPath>..\APIWizard.Test.Common\bin\Debug\net7.0\APIWizard.Test.Common.dll</HintPath>
+      <HintPath>..\APIWizard.Sample.Common\bin\Debug\net7.0\APIWizard.Sample.Common.dll</HintPath>
     </Reference>
   </ItemGroup>
 

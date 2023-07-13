@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace APIWizard.Test.Common
+namespace APIWizard.Sample.Common
 {
     public class Forecast
     {

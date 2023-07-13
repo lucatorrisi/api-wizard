@@ -1,7 +1,7 @@
-using APIWizard.Test.Common;
+using APIWizard.Sample.Common;
 using Microsoft.AspNetCore.Mvc;
 
-namespace APIWizard.Test.ASPNETCore.Controllers
+namespace APIWizard.Sample.ASPNETCore.Controllers
 {
     [ApiController]
     [Route("[controller]")]
