@@ -1,17 +1,9 @@
 ﻿using APIWizard.Constants;
-using APIWizard.Enums;
 using APIWizard.Extensions;
 using APIWizard.Model;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http.Json;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using Path = APIWizard.Model.Path;
 
 namespace APIWizard.Builders
@@ -20,21 +12,55 @@ namespace APIWizard.Builders
     {
         private WizardSchema schema;
 
+        /// <summary>
+        /// Sets the configuration of the APIClient using a configuration file path.
+        /// </summary>
+        /// <param name="path">The path to the configuration file.</param>
+        /// <returns>The APIClientBuilder instance.</returns>
         public APIClientBuilder WithConfigurationFile(string path)
         {
-            if (path == null) throw new ArgumentNullException(nameof(path));
-            schema = JsonConvert.DeserializeObject<WizardSchema>(File.ReadAllText(System.IO.Path.Combine(System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), path))) ?? throw new ArgumentException(ExceptionMessages.APIClientBuilderWithConfigurationFilePathArgumentException, path);
+            if (string.IsNullOrEmpty(path))
+            {
+                throw new ArgumentException("Invalid file path.", nameof(path));
+            }
+
+            string fullPath = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), path);
+            if (!File.Exists(fullPath))
+            {
+                throw new FileNotFoundException("Configuration file not found.", path);
+            }
+
+            string json = File.ReadAllText(fullPath);
+            schema = JsonConvert.DeserializeObject<WizardSchema>(json) ?? throw new ArgumentException("Invalid configuration file format.", path);
             return this;
         }
+        /// <summary>
+        /// Sets the configuration of the APIClient using an IConfigurationSection object.
+        /// </summary>
+        /// <param name="section">The IConfigurationSection object containing the configuration.</param>
+        /// <returns>The APIClientBuilder instance.</returns>
         public APIClientBuilder WithConfiguration(IConfigurationSection section)
         {
-            if (section == null) throw new ArgumentNullException(nameof(section));
+            if (section == null)
+            {
+                throw new ArgumentNullException(nameof(section));
+            }
+
             schema = new WizardSchema();
             section.Bind(schema);
             return this;
         }
+        /// <summary>
+        /// Builds and returns an instance of the APIClient.
+        /// </summary>
+        /// <returns>An instance of the APIClient.</returns>
         public IAPIClient Build()
         {
+            if (schema == null)
+            {
+                throw new InvalidOperationException("Configuration is not set. Please use WithConfigurationFile or WithConfiguration methods.");
+            }
+
             return new APIClient(HttpClientDefaults.PooledConnectionLifetime, schema, CreateRequestsDictionary());
         }
 

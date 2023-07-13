@@ -31,27 +31,25 @@ namespace APIWizard
 
         public async Task<TResult> DoRequestAsync<TResult>(string pathName, object requestBody, CancellationToken cancellationToken)
         {
-            HttpRequestMessage? requestMessage;
-            try
+            if (!requests.TryGetValue(pathName, out HttpRequestMessage? requestMessage))
             {
-                requestMessage = requests[pathName];
-            }
-            catch (Exception ex)
-            {
-                throw new APIClientException(ExceptionMessages.APIClientRequestNotFound, ex);
+                throw new APIClientException(ExceptionMessages.APIClientRequestNotFound);
             }
 
-            requestMessage.Content = new StringContent(JsonConvert.SerializeObject(requestBody), Encoding.UTF8, GetConsumesByPathName(pathName));
-            using HttpResponseMessage response = await httpClient.SendAsync(requestMessage, cancellationToken);
-            return JsonConvert.DeserializeObject<TResult>(await response.Content.ReadAsStringAsync(cancellationToken));
+            var jsonRequest = JsonConvert.SerializeObject(requestBody);
+            var content = new StringContent(jsonRequest, Encoding.UTF8, GetConsumesByPathName(pathName));
+            requestMessage.Content = content;
+
+            using var response = await httpClient.SendAsync(requestMessage, cancellationToken);
+            var jsonResponse = await response.Content.ReadAsStringAsync(cancellationToken);
+
+            return JsonConvert.DeserializeObject<TResult>(jsonResponse);
         }
 
         private string GetConsumesByPathName(string pathName)
         {
             var consumes = schema.Paths.FirstOrDefault(p => p.Name == pathName)?.Consumes;
-            if(string.IsNullOrEmpty(consumes))
-                return HttpClientDefaults.DefaultMediaType;
-            return consumes;
+            return string.IsNullOrEmpty(consumes) ? HttpClientDefaults.DefaultMediaType : consumes;
         }
     }
 }
