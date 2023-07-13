@@ -24,11 +24,11 @@ var forecast = await apiClient.DoRequestAsync<Forecast>("forecast", null, Cancel
 ```
 ### ASP Net Application DI
 ```csharp
-var apiWizard = new APIClientBuilder()
+var apiClient = new APIClientBuilder()
     .WithConfiguration(Configuration.GetSection("APIWizard:Schema"))
     .Build();
 
-services.AddAPIWizard(apiWizard);
+services.AddAPIWizard(apiClient);
 ```
 
 ### Configuration Example

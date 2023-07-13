@@ -10,11 +10,11 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var apiWizard = new APIClientBuilder()
+var apiClient = new APIClientBuilder()
     .WithConfiguration(builder.Configuration.GetSection("APIWizard:Schema"))
     .Build();
 
-builder.Services.AddAPIWizard(apiWizard);
+builder.Services.AddAPIWizard(apiClient);
 
 var app = builder.Build();
 
