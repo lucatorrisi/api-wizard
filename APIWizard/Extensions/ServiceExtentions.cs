@@ -10,7 +10,7 @@ namespace APIWizard.Extensions
 {
     public static class ServiceExtentions
     {
-        public static void AddAPIWizard(this IServiceCollection services, IAPIClient apiClient)
+        public static void AddAPIWizardClient(this IServiceCollection services, IAPIClient apiClient)
         {
             services.AddSingleton(apiClient);
         }

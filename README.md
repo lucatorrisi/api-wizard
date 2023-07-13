@@ -28,7 +28,7 @@ var apiClient = new APIClientBuilder()
     .WithConfiguration(Configuration.GetSection("APIWizard:Schema"))
     .Build();
 
-services.AddAPIWizard(apiClient);
+services.AddAPIWizardClient(apiClient);
 ```
 
 ### Configuration Example

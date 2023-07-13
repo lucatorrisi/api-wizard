@@ -14,7 +14,7 @@ var apiClient = new APIClientBuilder()
     .WithConfiguration(builder.Configuration.GetSection("APIWizard:Schema"))
     .Build();
 
-builder.Services.AddAPIWizard(apiClient);
+builder.Services.AddAPIWizardClient(apiClient);
 
 var app = builder.Build();
 
