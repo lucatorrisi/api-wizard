@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\APIWizard.Test.Common\APIWizard.Test.Common.csproj" />
+    <ProjectReference Include="..\APIWizard\APIWizard.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="APIWizard">
+      <HintPath>..\APIWizard\bin\Debug\net7.0\APIWizard.dll</HintPath>
+    </Reference>
+    <Reference Include="APIWizard.Test.Common">
+      <HintPath>..\APIWizard.Test.Common\bin\Debug\net7.0\APIWizard.Test.Common.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="schema.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

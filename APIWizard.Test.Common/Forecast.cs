@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace APIWizard.Test
+namespace APIWizard.Test.Common
 {
-    internal class Forecast
+    public class Forecast
     {
         public double Latitude { get; set; }
         public double Longitude { get; set; }

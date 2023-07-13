@@ -12,5 +12,6 @@ namespace APIWizard.Constants
         
         public const string HttpsSchema = "https";
         public const string HttpSchema = "http";
+        public const string DefaultMediaType = "application/json";
     }
 }

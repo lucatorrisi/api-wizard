@@ -11,13 +11,13 @@ using System.Threading.Tasks;
 
 namespace APIWizard
 {
-    public class APIClient
+    public class APIClient : IAPIClient
     {
         private readonly HttpClient httpClient;
         private readonly WizardSchema schema;
-        private readonly ConcurrentDictionary<string, HttpRequestMessage> requests;
+        private readonly Dictionary<string, HttpRequestMessage> requests;
 
-        internal APIClient(TimeSpan pooledConnectionLifetime, WizardSchema schema, ConcurrentDictionary<string, HttpRequestMessage> requests)
+        internal APIClient(TimeSpan pooledConnectionLifetime, WizardSchema schema, Dictionary<string, HttpRequestMessage> requests)
         {
             var handler = new SocketsHttpHandler
             {
@@ -48,7 +48,10 @@ namespace APIWizard
 
         private string GetConsumesByPathName(string pathName)
         {
-            return schema.Paths.FirstOrDefault(p => p.Name == pathName)?.Consumes;
+            var consumes = schema.Paths.FirstOrDefault(p => p.Name == pathName)?.Consumes;
+            if(string.IsNullOrEmpty(consumes))
+                return HttpClientDefaults.DefaultMediaType;
+            return consumes;
         }
     }
 }

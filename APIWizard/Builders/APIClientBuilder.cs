@@ -9,6 +9,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http.Json;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Path = APIWizard.Model.Path;
@@ -22,7 +23,7 @@ namespace APIWizard.Builders
         public APIClientBuilder WithConfigurationFile(string path)
         {
             if (path == null) throw new ArgumentNullException(nameof(path));
-            schema = JsonConvert.DeserializeObject<WizardSchema>(File.ReadAllText(path)) ?? throw new ArgumentException(ExceptionMessages.APIClientBuilderWithConfigurationFilePathArgumentException, path);
+            schema = JsonConvert.DeserializeObject<WizardSchema>(File.ReadAllText(System.IO.Path.Combine(System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), path))) ?? throw new ArgumentException(ExceptionMessages.APIClientBuilderWithConfigurationFilePathArgumentException, path);
             return this;
         }
         public APIClientBuilder WithConfiguration(IConfigurationSection section)
@@ -32,14 +33,14 @@ namespace APIWizard.Builders
             section.Bind(schema);
             return this;
         }
-        public APIClient Build()
+        public IAPIClient Build()
         {
             return new APIClient(HttpClientDefaults.PooledConnectionLifetime, schema, CreateRequestsDictionary());
         }
 
-        private ConcurrentDictionary<string, HttpRequestMessage> CreateRequestsDictionary()
+        private Dictionary<string, HttpRequestMessage> CreateRequestsDictionary()
         {
-            ConcurrentDictionary<string, HttpRequestMessage> requests = new ConcurrentDictionary<string, HttpRequestMessage>();
+            Dictionary<string, HttpRequestMessage> requests = new Dictionary<string, HttpRequestMessage>();
 
             foreach (Path path in schema.Paths)
             {
