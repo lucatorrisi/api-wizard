@@ -1,17 +1,20 @@
 {
   "host": "api.open-meteo.com",
   "basePath": "/v1",
-  "schemes": [ "http", "https" ],
-  "paths": [
-    {
-      "name": "forecast",
-      "route": "forecast?latitude=52.52&longitude=13.41",
-      "method": "get",
-      "consumes": null,
-      "security": {
-        "type": "APIKey",
-        "key": "xyz"
+  "schemes": [
+    "https",
+    "http"
+  ],
+  "paths": {
+    "forecast?latitude=52.52&longitude=13.41": {
+      "get": {
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "produces": [
+          "application/json"
+        ]
       }
     }
-  ]
+  }
 }

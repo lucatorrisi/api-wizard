@@ -1,16 +1,15 @@
 ﻿using APIWizard.Constants;
 using APIWizard.Extensions;
-using APIWizard.Model;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System.Reflection;
-using Path = APIWizard.Model.Path;
+using APIWizard.Models;
 
 namespace APIWizard.Builders
 {
     public class APIClientBuilder
     {
-        private WizardSchema schema;
+        private WizardSchema? schema;
 
         /// <summary>
         /// Sets the configuration of the APIClient using a configuration file path.
@@ -24,7 +23,7 @@ namespace APIWizard.Builders
                 throw new ArgumentException("Invalid file path.", nameof(path));
             }
 
-            string fullPath = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), path);
+            string fullPath = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly()?.Location ?? string.Empty) ?? string.Empty, path);
             if (!File.Exists(fullPath))
             {
                 throw new FileNotFoundException("Configuration file not found.", path);
@@ -46,8 +45,22 @@ namespace APIWizard.Builders
                 throw new ArgumentNullException(nameof(section));
             }
 
-            schema = new WizardSchema();
-            section.Bind(schema);
+            schema = section.Get<WizardSchema>(options =>
+            {
+                options.BindNonPublicProperties = true;
+            });
+            return this;
+        }
+        /// <summary>
+        /// Sets the configuration of the APIClient using a Swagger URL to fetch the configuration JSON.
+        /// </summary>
+        /// <param name="jsonSwaggerUrl">The URL pointing to the Swagger JSON configuration.</param>
+        /// <returns>The APIClientBuilder instance.</returns>
+        public APIClientBuilder WithSwaggerUrlConfiguration(string jsonSwaggerUrl)
+        {
+            using var httpClient = new HttpClient();
+            string responseBody = httpClient.GetStringAsync(jsonSwaggerUrl).Result;
+            schema = JsonConvert.DeserializeObject<WizardSchema>(responseBody) ?? throw new ArgumentException("Invalid configuration file format.", jsonSwaggerUrl);
             return this;
         }
         /// <summary>
@@ -58,22 +71,10 @@ namespace APIWizard.Builders
         {
             if (schema == null)
             {
-                throw new InvalidOperationException("Configuration is not set. Please use WithConfigurationFile or WithConfiguration methods.");
+                throw new InvalidOperationException("Configuration is not set. Please use 'Configuration' methods.");
             }
 
-            return new APIClient(HttpClientDefaults.PooledConnectionLifetime, schema, CreateRequestsDictionary());
-        }
-
-        private Dictionary<string, HttpRequestMessage> CreateRequestsDictionary()
-        {
-            Dictionary<string, HttpRequestMessage> requests = new Dictionary<string, HttpRequestMessage>();
-
-            foreach (Path path in schema.Paths)
-            {
-                requests.TryAdd(path.Name, path.ToHttpRequestMessage(schema.Host, schema.BasePath, schema.Schemes));
-            }
-
-            return requests;
+            return new APIClient(HttpClientDefaults.PooledConnectionLifetime, schema);
         }
     }
 }

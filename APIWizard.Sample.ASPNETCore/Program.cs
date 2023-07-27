@@ -10,8 +10,12 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+//var apiClient = new APIClientBuilder()
+//    .WithConfiguration(builder.Configuration.GetSection("APIWizard"))
+//    .Build();
+
 var apiClient = new APIClientBuilder()
-    .WithConfiguration(builder.Configuration.GetSection("APIWizard:Schema"))
+    .WithSwaggerUrlConfiguration("https://petstore.swagger.io/v2/swagger.json")
     .Build();
 
 builder.Services.AddAPIWizardClient(apiClient);

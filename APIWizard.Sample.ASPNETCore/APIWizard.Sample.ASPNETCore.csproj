@@ -8,17 +8,14 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.7" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="7.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="APIWizard">
-      <HintPath>..\APIWizard\bin\Debug\net7.0\APIWizard.dll</HintPath>
-    </Reference>
-    <Reference Include="APIWizard.Test.Common">
-      <HintPath>..\APIWizard.Sample.Common\bin\Debug\net7.0\APIWizard.Sample.Common.dll</HintPath>
-    </Reference>
+    <ProjectReference Include="..\APIWizard.Sample.Common\APIWizard.Sample.Common.csproj" />
+    <ProjectReference Include="..\APIWizard\APIWizard.csproj" />
   </ItemGroup>
 
 </Project>

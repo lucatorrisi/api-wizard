@@ -12,12 +12,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="APIWizard">
-      <HintPath>..\APIWizard\bin\Debug\net7.0\APIWizard.dll</HintPath>
-    </Reference>
-    <Reference Include="APIWizard.Test.Common">
-      <HintPath>..\APIWizard.Sample.Common\bin\Debug\net7.0\APIWizard.Sample.Common.dll</HintPath>
-    </Reference>
+    <ProjectReference Include="..\APIWizard.Sample.Common\APIWizard.Sample.Common.csproj" />
+    <ProjectReference Include="..\APIWizard\APIWizard.csproj" />
   </ItemGroup>
 
   <ItemGroup>

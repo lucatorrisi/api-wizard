@@ -1,10 +1,13 @@
 ﻿using APIWizard.Builders;
 using APIWizard.Sample.Common;
 
+//var apiClient = new APIClientBuilder()
+//    .WithConfigurationFile("schema.json")
+//    .Build();
 var apiClient = new APIClientBuilder()
-    .WithConfigurationFile("schema.json")
+    .WithSwaggerUrlConfiguration("https://petstore.swagger.io/v2/swagger.json")
     .Build();
 
-var forecast = await apiClient.DoRequestAsync<Forecast>("forecast", null, CancellationToken.None);
+var sampleResponse = await apiClient.DoRequestAsync<Inventory>("/store/inventory", null, CancellationToken.None);
 
-Console.WriteLine(forecast);
+Console.WriteLine(sampleResponse);

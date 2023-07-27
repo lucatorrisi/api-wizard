@@ -1,13 +1,9 @@
 ﻿using APIWizard.Constants;
 using APIWizard.Exceptions;
-using APIWizard.Model;
+using APIWizard.Extensions;
+using APIWizard.Models;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace APIWizard
 {
@@ -15,41 +11,53 @@ namespace APIWizard
     {
         private readonly HttpClient httpClient;
         private readonly WizardSchema schema;
-        private readonly Dictionary<string, HttpRequestMessage> requests;
 
-        internal APIClient(TimeSpan pooledConnectionLifetime, WizardSchema schema, Dictionary<string, HttpRequestMessage> requests)
+        internal APIClient(TimeSpan pooledConnectionLifetime, WizardSchema schema)
         {
             var handler = new SocketsHttpHandler
             {
                 PooledConnectionLifetime = pooledConnectionLifetime
             };
             httpClient = new HttpClient(handler);
-
             this.schema = schema;
-            this.requests = requests;
-        }
 
-        public async Task<TResult> DoRequestAsync<TResult>(string pathName, object requestBody, CancellationToken cancellationToken)
+        }
+        public async Task<TResult> DoRequestAsync<TResult>(string pathName, object requestBody, CancellationToken cancellationToken, TResult defaultValue = default)
         {
-            if (!requests.TryGetValue(pathName, out HttpRequestMessage? requestMessage))
+            if (!schema.Paths.TryGetValue(pathName, out Models.Path? path))
             {
                 throw new APIClientException(ExceptionMessages.APIClientRequestNotFound);
             }
 
-            var jsonRequest = JsonConvert.SerializeObject(requestBody);
-            var content = new StringContent(jsonRequest, Encoding.UTF8, GetConsumesByPathName(pathName));
-            requestMessage.Content = content;
+            var requestMessage = path.ToHttpRequestMessage(schema.Host, schema.BasePath, pathName, schema.Schemes);
+
+            if (requestBody != null)
+            {
+                var jsonRequest = JsonConvert.SerializeObject(requestBody);
+                var content = new StringContent(jsonRequest, Encoding.UTF8, GetConsumesByPathName(pathName));
+                requestMessage.Content = content;
+            }
 
             using var response = await httpClient.SendAsync(requestMessage, cancellationToken);
             var jsonResponse = await response.Content.ReadAsStringAsync(cancellationToken);
 
-            return JsonConvert.DeserializeObject<TResult>(jsonResponse);
+            return JsonConvert.DeserializeObject<TResult>(jsonResponse) ?? defaultValue;
         }
-
-        private string GetConsumesByPathName(string pathName)
+        /// <summary>
+        /// Retrieves the "Consumes" media type for the specified API path.
+        /// If the API path is not found or the media type is not specified, the default media type is returned.
+        /// </summary>
+        /// <param name="pathName">The name of the API path.</param>
+        /// <returns>The "Consumes" media type for the API path, or the default media type if not specified.</returns>
+        private string GetConsumesByPathName(string pathName, string defaultMediaType = HttpClientDefaults.DefaultMediaType)
         {
-            var consumes = schema.Paths.FirstOrDefault(p => p.Name == pathName)?.Consumes;
-            return string.IsNullOrEmpty(consumes) ? HttpClientDefaults.DefaultMediaType : consumes;
+            if (!schema.Paths.TryGetValue(pathName, out Models.Path? path) || path == null)
+            {
+                return defaultMediaType;
+            }
+
+            var consumes = path.PathDetail.Consumes?.FirstOrDefault(p => p == pathName);
+            return string.IsNullOrEmpty(consumes) ? defaultMediaType : consumes;
         }
     }
 }
