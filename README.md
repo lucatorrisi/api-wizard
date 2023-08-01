@@ -2,9 +2,7 @@
 
 ![Logo](https://raw.githubusercontent.com/lucatorrisi/api-wizard/6b057ad1aea91e594eeeeb53d2e1ce2cbfbf95f4/logo.svg)
 
-[![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-![Build Status](https://img.shields.io/travis/your-username/APIWizard)
-![Nuget](https://img.shields.io/nuget/v/APIWizard)
+![Build](https://img.shields.io/appveyor/build/lucatorrisi/api-wizard) ![Nuget](https://img.shields.io/nuget/v/APIWizard) ![Issue](https://img.shields.io/github/issues/lucatorrisi/api-wizard) ![License](https://img.shields.io/github/license/lucatorrisi/api-wizard)
 
 ## Introduction
 
