@@ -16,8 +16,6 @@ namespace APIWizard.Models.V3
         public HttpRequestMessage? BuildRequest(string pathName, object? requestBody, string method = null, string server = null)
         {
             HttpRequestMessage? request = null;
-            PathDetail? pathDetail = null;
-
             if (pathName == null)
                 throw new ArgumentNullException("pathName");
             if (Paths == null)
@@ -28,6 +26,7 @@ namespace APIWizard.Models.V3
                 if (path == null)
                     throw new InvalidOperationException("Error");
 
+                PathDetail? pathDetail;
                 if (method != null && path.TryGetValue(method, out pathDetail))
                 {
                     if (pathDetail == null)

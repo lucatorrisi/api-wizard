@@ -2,6 +2,7 @@
 using APIWizard.Enums;
 using APIWizard.Sample.Common;
 
+// GET
 var apiClient = new APIClientBuilder()
     .WithConfigurationFile("schema.json")
     .WithVersion(OpenAPIVersion.V2)
@@ -11,6 +12,15 @@ var apiClient = new APIClientBuilder()
     })
     .Build();
 
-var sampleResponse = await apiClient.SendRequestAsync<Inventory>("/store/inventory", cancellationToken: CancellationToken.None);
+var sampleResponse1 = await apiClient.SendRequestAsync<Inventory>("/store/inventory", cancellationToken: CancellationToken.None);
 
-Console.WriteLine(sampleResponse);
+// POST with form data
+FileStream fileStreamRead = new FileStream("logo.svg", FileMode.Open, FileAccess.Read);
+var dictionary = new Dictionary<object, object>
+{
+    {"logo.svg", fileStreamRead }
+};
+
+var sampleResponse2 = await apiClient.SendRequestAsync<PetUploadImage>("/pet/1/uploadImage", "post", dictionary, cancellationToken: CancellationToken.None);
+
+Console.WriteLine(sampleResponse2.Message);

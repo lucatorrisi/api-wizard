@@ -38,11 +38,6 @@ namespace APIWizard
             return await ExecuteRequestAsync(pathName, HttpClientDefaults.GetHttpMethod, defaultValue: defaultResult, cancellationToken: cancellationToken);
         }
 
-        public async Task<TResult> SendRequestAsync<TResult>(string pathName, string method, object requestBody = null, TResult defaultValue = default, CancellationToken cancellationToken = default)
-        {
-            return await ExecuteRequestAsync(pathName, method, requestBody, defaultValue: defaultValue, cancellationToken: cancellationToken);
-        }
-
         public async Task<TResult> SendRequestAsync<TResult>(string pathName, string method, object requestBody, string server, TResult defaultValue, CancellationToken cancellationToken)
         {
             return await ExecuteRequestAsync(pathName, method, requestBody, server, defaultValue: defaultValue, cancellationToken: cancellationToken);

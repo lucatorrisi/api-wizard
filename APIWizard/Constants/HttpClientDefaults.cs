@@ -6,6 +6,7 @@
         
         public const string HttpsSchema = "https";
         public const string HttpSchema = "http";
+        public const string MultipartFormDataName = "file";
 
         public const string GetHttpMethod = "GET";
         public const string PostHttpMethod = "POST";
