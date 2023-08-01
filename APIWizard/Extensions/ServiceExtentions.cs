@@ -1,22 +1,31 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using APIWizard.Constants;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace APIWizard.Extensions
 {
-    public static class ServiceExtentions
+    /// <summary>
+    /// Extension methods for configuring API Wizard client in IServiceCollection.
+    /// </summary>
+    public static class ServiceExtensions
     {
         /// <summary>
-        /// Adds the APIWizard client implementation as a singleton service to the dependency injection container.
+        /// Adds the API Wizard client to the IServiceCollection as a singleton.
         /// </summary>
-        /// <param name="services">The IServiceCollection instance to add the service to.</param>
-        /// <param name="apiClient">The instance of the API client to be registered as a singleton.</param>
+        /// <param name="services">The IServiceCollection instance.</param>
+        /// <param name="apiClient">The instance of the API client to be added.</param>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="services"/> or <paramref name="apiClient"/> is null.</exception>
         public static void AddAPIWizardClient(this IServiceCollection services, IAPIClient apiClient)
         {
+            if (services == null)
+            {
+                throw new ArgumentNullException(nameof(services), ExceptionMessages.ServiceCollectionNull);
+            }
+
+            if (apiClient == null)
+            {
+                throw new ArgumentNullException(nameof(apiClient), ExceptionMessages.APIClientNull);
+            }
+
             services.AddSingleton(apiClient);
         }
     }

@@ -1,4 +1,5 @@
 using APIWizard.Builders;
+using APIWizard.Enums;
 using APIWizard.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,12 +11,13 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-//var apiClient = new APIClientBuilder()
-//    .WithConfiguration(builder.Configuration.GetSection("APIWizard"))
-//    .Build();
-
 var apiClient = new APIClientBuilder()
-    .WithSwaggerUrlConfiguration("https://petstore.swagger.io/v2/swagger.json")
+    .WithOpenAPIUrlConfiguration("https://raw.githubusercontent.com/OAI/OpenAPI-Specification/main/examples/v3.0/petstore-expanded.json")
+    .WithVersion(OpenAPIVersion.V3)
+    .WithOptions(options =>
+    {
+        options.PooledConnectionLifetime = TimeSpan.FromMinutes(2);
+    })
     .Build();
 
 builder.Services.AddAPIWizardClient(apiClient);

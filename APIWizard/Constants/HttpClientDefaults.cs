@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace APIWizard.Constants
+﻿namespace APIWizard.Constants
 {
     public static class HttpClientDefaults
     {
@@ -12,7 +6,6 @@ namespace APIWizard.Constants
         
         public const string HttpsSchema = "https";
         public const string HttpSchema = "http";
-        public const string DefaultMediaType = "application/json";
 
         public const string GetHttpMethod = "GET";
         public const string PostHttpMethod = "POST";

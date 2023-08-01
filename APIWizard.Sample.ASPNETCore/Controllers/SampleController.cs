@@ -19,7 +19,7 @@ namespace APIWizard.Sample.ASPNETCore.Controllers
         [HttpGet]
         public async Task<Inventory> Get()
         {
-            return await _apiClient.DoRequestAsync<Inventory>("/store/inventory", null, CancellationToken.None);
+            return await _apiClient.SendRequestAsync<Inventory>("/pets", CancellationToken.None);
         }
     }
 }
