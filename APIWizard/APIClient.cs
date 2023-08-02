@@ -55,17 +55,16 @@ namespace APIWizard
             try
             {
                 using var response = await httpClient.SendAsync(requestMessage, cancellationToken);
-                response.EnsureSuccessStatusCode();
                 var jsonResponse = await response.Content.ReadAsStringAsync(cancellationToken);
                 return JsonConvert.DeserializeObject<TResult>(jsonResponse) ?? defaultValue;
-            }
-            catch (HttpRequestException ex)
-            {
-                throw new APIClientException(ExceptionMessages.ErrorSendingRequest, ex);
             }
             catch (JsonException ex)
             {
                 throw new APIClientException(ExceptionMessages.DeserializationError, ex);
+            }
+            catch (Exception ex)
+            {
+                throw new APIClientException(ExceptionMessages.ErrorSendingRequest, ex);
             }
         }
     }

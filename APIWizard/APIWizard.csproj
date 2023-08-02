@@ -8,7 +8,7 @@
     <Company></Company>
     <Description>APIWizard is a .NET 7 NuGet package that simplifies the process of creating a customized HTTP client for making HTTP calls to third-party services. It allows you to configure the client through a JSON configuration file.</Description>
     <PackageProjectUrl>https://github.com/lucatorrisi/api-wizard</PackageProjectUrl>
-    <PackageIcon>icon.png</PackageIcon>
+    <PackageIcon>logo.png</PackageIcon>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/lucatorrisi/api-wizard</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
@@ -19,7 +19,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="..\icon.png">
+    <None Include="..\logo.png">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>

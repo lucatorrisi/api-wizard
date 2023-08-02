@@ -2,7 +2,7 @@
 using APIWizard.Enums;
 using APIWizard.Sample.Common;
 
-// GET
+// Simple GET
 var apiClient = new APIClientBuilder()
     .WithConfigurationFile("schema.json")
     .WithVersion(OpenAPIVersion.V2)
@@ -11,7 +11,6 @@ var apiClient = new APIClientBuilder()
         options.PooledConnectionLifetime = TimeSpan.FromMinutes(2);
     })
     .Build();
-
 var sampleResponse1 = await apiClient.SendRequestAsync<Inventory>("/store/inventory", cancellationToken: CancellationToken.None);
 
 // POST with form data
@@ -20,7 +19,5 @@ var dictionary = new Dictionary<object, object>
 {
     {"logo.svg", fileStreamRead }
 };
-
 var sampleResponse2 = await apiClient.SendRequestAsync<PetUploadImage>("/pet/1/uploadImage", "post", dictionary, cancellationToken: CancellationToken.None);
-
 Console.WriteLine(sampleResponse2.Message);
