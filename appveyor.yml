@@ -20,7 +20,9 @@ build_script:
 artifacts:
  - path: '**\*.nupkg' 
    type: 'NuGetPackage'
+   name: 'api-wizard'
 
 deploy:
 - provider: Environment
   name: api-wizard-nuget
+  artifact: 'api-wizard'
