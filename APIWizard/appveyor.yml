@@ -1,0 +1,26 @@
+version: 0.0.{build}
+
+branches:
+  only:
+  - master
+  
+image: Visual Studio 2022
+  
+init:
+  - git config --global core.autocrlf true
+  
+before_build:
+ - cmd: nuget restore    
+ - cmd: dotnet restore APIWizard.sln
+
+build_script:
+ - cmd: dotnet build APIWizard /p:AssemblyVersion=%appveyor_build_version% /p:InformationalVersion=%appveyor_build_version%
+ - cmd: dotnet pack APIWizard /p:AssemblyVersion=%appveyor_build_version% /p:InformationalVersion=%appveyor_build_version% /p:PackageVersion=%appveyor_build_version% 
+ 
+artifacts:
+ - path: '**\*.nupkg' 
+   type: 'NuGetPackage'
+
+deploy:
+- provider: Environment
+  name: api-wizard-nuget
