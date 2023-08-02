@@ -1,6 +1,6 @@
 # APIWizard
 
-![Logo](https://raw.githubusercontent.com/lucatorrisi/api-wizard/6b057ad1aea91e594eeeeb53d2e1ce2cbfbf95f4/logo.png)
+![Logo](https://raw.githubusercontent.com/lucatorrisi/api-wizard/master/logo.png)
 
 ![Build Status](https://img.shields.io/appveyor/build/lucatorrisi/api-wizard) ![Nuget](https://img.shields.io/nuget/v/APIWizard) ![Issue](https://img.shields.io/github/issues/lucatorrisi/api-wizard) ![License](https://img.shields.io/github/license/lucatorrisi/api-wizard)
 
