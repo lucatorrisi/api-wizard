@@ -1,4 +1,5 @@
-﻿using APIWizard.Extensions;
+﻿using APIWizard.Constants;
+using APIWizard.Extensions;
 using APIWizard.Models.Abstracts;
 using APIWizard.Models.Interfaces;
 using APIWizard.Utils;
@@ -17,13 +18,11 @@ namespace APIWizard.Models.V2
         [JsonProperty("paths")]
         public Dictionary<string, Dictionary<string, PathDetail?>>? Paths { get; set; }
 
-        public HttpRequestMessage? BuildRequest(string pathName, object? requestBody, string method = null, string server = null)
+        public HttpRequestMessage? BuildRequest(string pathName, object? inputData, string method = null, string server = null)
         {
+            ValidationUtils.ArgumentNotNull(pathName, nameof(pathName));
             HttpRequestMessage request = null;
-            PathDetail? pathDetail = null;
 
-            if (pathName == null)
-                throw new ArgumentNullException("pathName");
             if (Paths == null)
                 throw new InvalidOperationException("Error");
 
@@ -31,7 +30,8 @@ namespace APIWizard.Models.V2
             {
                 if (path == null)
                     throw new InvalidOperationException("Error");
-
+                
+                PathDetail? pathDetail;
                 if (method != null && path.TryGetValue(method, out pathDetail))
                 {
                     if (pathDetail == null)
@@ -45,7 +45,7 @@ namespace APIWizard.Models.V2
 
                 request = new HttpRequestMessage(
                     HttpRequestUtils.ConvertToHttpMethod(method),
-                    GetUri(pathName)).AddRequestBody(requestBody, pathDetail?.GetContentType()
+                    GetUri(pathName)).AddInputData(inputData, pathDetail?.GetContentType()
                     );
             }
 

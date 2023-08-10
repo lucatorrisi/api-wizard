@@ -54,11 +54,11 @@ namespace APIWizard
         /// <typeparam name="TResult">The type of the result to deserialize the response to.</typeparam>
         /// <param name="pathName">The API endpoint path.</param>
         /// <param name="method">The HTTP method for the request.</param>
-        /// <param name="requestBody">The request body (if any).</param>
+        /// <param name="inputData">The input data (if any).</param>
         /// <param name="cancellationToken">A cancellation token to cancel the request.</param>
         /// <returns>An <see cref="APIResponse{TResult}"/> containing the deserialized response of type TResult.</returns>
         /// <exception cref="ArgumentNullException">Thrown when pathName or method is null.</exception>
-        Task<APIResponse<TResult>> SendRequestAsync<TResult>(string pathName, string method, object requestBody, CancellationToken cancellationToken = default);
+        Task<APIResponse<TResult>> SendRequestAsync<TResult>(string pathName, string method, object inputData, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Sends an HTTP request with the specified method, request body, and returns the deserialized API response of the specified type with a default result.
@@ -66,12 +66,12 @@ namespace APIWizard
         /// <typeparam name="TResult">The type of the result to deserialize the response to.</typeparam>
         /// <param name="pathName">The API endpoint path.</param>
         /// <param name="method">The HTTP method for the request.</param>
-        /// <param name="requestBody">The request body (if any).</param>
+        /// <param name="inputData">The input data (if any).</param>
         /// <param name="defaultResult">The default result if deserialization fails or the response is empty.</param>
         /// <param name="cancellationToken">A cancellation token to cancel the request.</param>
         /// <returns>An <see cref="APIResponse{TResult}"/> containing the deserialized response of type TResult, or the default result if deserialization fails or the response is empty.</returns>
         /// <exception cref="ArgumentNullException">Thrown when pathName or method is null.</exception>
-        Task<APIResponse<TResult>> SendRequestAsync<TResult>(string pathName, string method, object requestBody, TResult defaultResult, CancellationToken cancellationToken = default);
+        Task<APIResponse<TResult>> SendRequestAsync<TResult>(string pathName, string method, object inputData, TResult defaultResult, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Sends an HTTP request with the specified method, request body, server address, and returns the deserialized API response of the specified type.
@@ -79,12 +79,12 @@ namespace APIWizard
         /// <typeparam name="TResult">The type of the result to deserialize the response to.</typeparam>
         /// <param name="pathName">The API endpoint path.</param>
         /// <param name="method">The HTTP method for the request.</param>
-        /// <param name="requestBody">The request body (if any).</param>
+        /// <param name="inputData">The input data (if any).</param>
         /// <param name="server">The server address (optional).</param>
         /// <param name="cancellationToken">A cancellation token to cancel the request.</param>
         /// <returns>An <see cref="APIResponse{TResult}"/> containing the deserialized response of type TResult.</returns>
         /// <exception cref="ArgumentNullException">Thrown when pathName or method is null.</exception>
-        Task<APIResponse<TResult>> SendRequestAsync<TResult>(string pathName, string method, object requestBody, string server, CancellationToken cancellationToken = default);
+        Task<APIResponse<TResult>> SendRequestAsync<TResult>(string pathName, string method, object inputData, string server, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Sends an HTTP request with the specified method, request body, server address, and returns the deserialized API response of the specified type with a default result.
@@ -92,13 +92,13 @@ namespace APIWizard
         /// <typeparam name="TResult">The type of the result to deserialize the response to.</typeparam>
         /// <param name="pathName">The API endpoint path.</param>
         /// <param name="method">The HTTP method for the request.</param>
-        /// <param name="requestBody">The request body (if any).</param>
+        /// <param name="inputData">The input data (if any).</param>
         /// <param name="server">The server address (optional).</param>
         /// <param name="defaultResult">The default result if deserialization fails or the response is empty.</param>
         /// <param name="cancellationToken">A cancellation token to cancel the request.</param>
         /// <returns>An <see cref="APIResponse{TResult}"/> containing the deserialized response of type TResult, or the default result if deserialization fails or the response is empty.</returns>
         /// <exception cref="ArgumentNullException">Thrown when pathName or method is null.</exception>
-        Task<APIResponse<TResult>> SendRequestAsync<TResult>(string pathName, string method, object requestBody, string server, TResult defaultResult, CancellationToken cancellationToken = default);
+        Task<APIResponse<TResult>> SendRequestAsync<TResult>(string pathName, string method, object inputData, string server, TResult defaultResult, CancellationToken cancellationToken = default);
 
     }
 }

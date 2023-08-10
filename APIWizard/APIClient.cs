@@ -3,6 +3,7 @@ using APIWizard.Exceptions;
 using APIWizard.Models.Configuration;
 using APIWizard.Models.Interfaces;
 using APIWizard.Models.Response;
+using APIWizard.Utils;
 using Newtonsoft.Json;
 using System;
 using System.Net.Http;
@@ -49,50 +50,43 @@ namespace APIWizard
             return await ExecuteRequestAsync(pathName, method, null, null, defaultResult, cancellationToken: cancellationToken);
         }
 
-        public async Task<APIResponse<TResult>> SendRequestAsync<TResult>(string pathName, string method, object requestBody, CancellationToken cancellationToken = default)
+        public async Task<APIResponse<TResult>> SendRequestAsync<TResult>(string pathName, string method, object inputData, CancellationToken cancellationToken = default)
         {
-            return await ExecuteRequestAsync<TResult>(pathName, method, requestBody, null, default, cancellationToken: cancellationToken);
+            return await ExecuteRequestAsync<TResult>(pathName, method, inputData, null, default, cancellationToken: cancellationToken);
         }
 
-        public async Task<APIResponse<TResult>> SendRequestAsync<TResult>(string pathName, string method, object requestBody, TResult defaultResult, CancellationToken cancellationToken = default)
+        public async Task<APIResponse<TResult>> SendRequestAsync<TResult>(string pathName, string method, object inputData, TResult defaultResult, CancellationToken cancellationToken = default)
         {
-            return await ExecuteRequestAsync(pathName, method, requestBody, null, defaultResult, cancellationToken: cancellationToken);
+            return await ExecuteRequestAsync(pathName, method, inputData, null, defaultResult, cancellationToken: cancellationToken);
         }
 
-        public async Task<APIResponse<TResult>> SendRequestAsync<TResult>(string pathName, string method, object requestBody, string server, CancellationToken cancellationToken = default)
+        public async Task<APIResponse<TResult>> SendRequestAsync<TResult>(string pathName, string method, object inputData, string server, CancellationToken cancellationToken = default)
         {
-            return await ExecuteRequestAsync<TResult>(pathName, method, requestBody, server, default, cancellationToken: cancellationToken);
+            return await ExecuteRequestAsync<TResult>(pathName, method, inputData, server, default, cancellationToken: cancellationToken);
         }
 
-        public async Task<APIResponse<TResult>> SendRequestAsync<TResult>(string pathName, string method, object requestBody, string server, TResult defaultResult, CancellationToken cancellationToken = default)
+        public async Task<APIResponse<TResult>> SendRequestAsync<TResult>(string pathName, string method, object inputData, string server, TResult defaultResult, CancellationToken cancellationToken = default)
         {
-            return await ExecuteRequestAsync(pathName, method, requestBody, server, defaultResult, cancellationToken: cancellationToken);
+            return await ExecuteRequestAsync(pathName, method, inputData, server, defaultResult, cancellationToken: cancellationToken);
         }
 
         private async Task<APIResponse<TResult>> ExecuteRequestAsync<TResult>(
             string pathName,
             string method,
-            object? requestBody,
+            object? inputData,
             string? server,
             TResult? defaultValue = default,
             CancellationToken cancellationToken = default)
         {
-            if (string.IsNullOrEmpty(pathName))
-            {
-                throw new ArgumentNullException(nameof(pathName), ExceptionMessages.InvalidPathName);
-            }
-
-            if (string.IsNullOrEmpty(method))
-            {
-                throw new ArgumentNullException(nameof(method), ExceptionMessages.InvalidMethod);
-            }
+            ValidationUtils.ArgumentNotNullOrEmpty(pathName, nameof(pathName), ExceptionMessages.InvalidPathName);
+            ValidationUtils.ArgumentNotNullOrEmpty(method, nameof(method), ExceptionMessages.InvalidMethod);
 
             if (httpClient == null)
             {
                 throw new InvalidOperationException(ExceptionMessages.HttpClientNotInitialized);
             }
 
-            var requestMessage = schema.BuildRequest(pathName, requestBody, method, server)
+            var requestMessage = schema.BuildRequest(pathName, inputData, method, server)
                                   ?? throw new APIClientException(ExceptionMessages.ErrorBuildingRequest);
 
             try

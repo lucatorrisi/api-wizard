@@ -10,16 +10,16 @@ namespace APIWizard.Extensions
 {
     internal static class WizardExtensions
     {
-        internal static HttpRequestMessage AddRequestBody(this HttpRequestMessage httpRequestMessage, object? requestBody = null, string? contentType = null)
+        internal static HttpRequestMessage AddInputData(this HttpRequestMessage httpRequestMessage, object? inputData = null, string? contentType = null)
         {
-            if (requestBody == null)
+            if (inputData == null)
             {
                 return httpRequestMessage;
             }
 
             try
             {
-                HttpContent httpContent = GetHttpContent(requestBody, contentType);
+                HttpContent httpContent = GetHttpContent(inputData, contentType);
                 httpRequestMessage.Content = httpContent;
             }
             catch (JsonSerializationException jsonEx)
@@ -35,21 +35,15 @@ namespace APIWizard.Extensions
         }
 
 
-        private static HttpContent GetHttpContent(object requestBody, string? contentType)
+        private static HttpContent GetHttpContent(object inputData, string? contentType)
         {
-            if (requestBody is IDictionary requestBodyDictionary)
+            if (inputData is IDictionary inputDict)
             {
-                if (string.Equals(contentType, ContentTypes.FormUrlEncoded, StringComparison.OrdinalIgnoreCase))
-                {
-                    var formData = new FormUrlEncodedContent(HttpRequestUtils.ConvertToEnumerable<string, string>(requestBodyDictionary));
-
-                    return formData;
-                }
-                else
+                if (string.Equals(contentType, ContentTypes.MultipartFormData, StringComparison.OrdinalIgnoreCase))
                 {
                     var formData = new MultipartFormDataContent();
 
-                    foreach (DictionaryEntry formEntry in requestBodyDictionary)
+                    foreach (DictionaryEntry formEntry in inputDict)
                     {
                         if (formEntry.Value is Stream stream)
                         {
@@ -65,11 +59,21 @@ namespace APIWizard.Extensions
 
                     return formData;
                 }
+                if (string.Equals(contentType, ContentTypes.FormUrlEncoded, StringComparison.OrdinalIgnoreCase))
+                {
+                    var formData = new FormUrlEncodedContent(HttpRequestUtils.ConvertToEnumerable<string, string>(inputDict));
+
+                    return formData;
+                }
+                else
+                {
+                    throw new InvalidOperationException(ExceptionMessages.ContentTypeNotSupported);
+                }
             }
             else
             {
-                var jsonRequest = JsonConvert.SerializeObject(requestBody);
-                return new StringContent(jsonRequest, Encoding.UTF8, contentType ?? ContentTypes.ApplicationJson);
+                var jsonInput = JsonConvert.SerializeObject(inputData);
+                return new StringContent(jsonInput, Encoding.UTF8, contentType ?? ContentTypes.ApplicationJson);
             }
         }
 

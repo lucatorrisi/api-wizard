@@ -23,6 +23,7 @@
         public const string ErrorSendingRequest = "Error sending the HTTP request";
         public const string DeserializationError = "Error deserializing the response JSON";
         public const string SerializationError = "Unable to serialize the request body to JSON";
+        public const string ContentTypeNotSupported = "Content type not supported";
         public const string UnexpectedError = "An unexpected error occurred";
     }
 }

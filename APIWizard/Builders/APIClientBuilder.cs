@@ -8,6 +8,7 @@ using System.Reflection;
 using APIWizard.Enums;
 using APIWizard.Models.Interfaces;
 using APIWizard.Models.Configuration;
+using APIWizard.Utils;
 
 namespace APIWizard.Builders
 {
@@ -31,10 +32,7 @@ namespace APIWizard.Builders
         /// <returns>The current APIClientBuilder instance.</returns>
         public APIClientBuilder WithConfigurationFile(string path)
         {
-            if (string.IsNullOrEmpty(path))
-            {
-                throw new ArgumentException(ExceptionMessages.InvalidFilePath, nameof(path));
-            }
+            ValidationUtils.ArgumentNotNullOrEmpty(path, nameof(path), ExceptionMessages.InvalidFilePath);
 
             string fullPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly()?.Location) ?? string.Empty, path);
             if (!File.Exists(fullPath))
@@ -61,7 +59,8 @@ namespace APIWizard.Builders
         /// <returns>The current APIClientBuilder instance.</returns>
         public APIClientBuilder WithConfiguration(IConfigurationSection section)
         {
-            configurationSection = section ?? throw new ArgumentNullException(nameof(section), ExceptionMessages.ConfigurationSectionNull);
+            ValidationUtils.ArgumentNotNull(section, nameof(section), ExceptionMessages.ConfigurationSectionNull);
+            configurationSection = section;
             configurationType = ConfigurationType.Section;
             return this;
         }
@@ -73,10 +72,7 @@ namespace APIWizard.Builders
         /// <returns>The current APIClientBuilder instance.</returns>
         public APIClientBuilder WithOpenAPIUrlConfigurationAsync(string jsonOpenApiUrl)
         {
-            if (string.IsNullOrEmpty(jsonOpenApiUrl))
-            {
-                throw new ArgumentException(ExceptionMessages.InvalidOpenAPIConfigurationUrl, nameof(jsonOpenApiUrl));
-            }
+            ValidationUtils.ArgumentNotNullOrEmpty(jsonOpenApiUrl, nameof(jsonOpenApiUrl), ExceptionMessages.InvalidOpenAPIConfigurationUrl);
 
             using var httpClient = new HttpClient();
             try
@@ -97,13 +93,8 @@ namespace APIWizard.Builders
         /// </summary>
         /// <param name="openApiVersion">The OpenAPI version.</param>
         /// <returns>The current APIClientBuilder instance.</returns>
-        public APIClientBuilder WithVersion(OpenAPIVersion openApiVersion = OpenAPIVersion.None)
+        public APIClientBuilder WithVersion(OpenAPIVersion openApiVersion = OpenAPIVersion.V2)
         {
-            if (openApiVersion == OpenAPIVersion.None)
-            {
-                throw new ArgumentException(ExceptionMessages.InvalidOpenAPIVersion, nameof(openApiVersion));
-            }
-
             this.openApiVersion = openApiVersion;
             return this;
         }
@@ -156,10 +147,7 @@ namespace APIWizard.Builders
 
         private static T DeserializeSchemaFromJson<T>(string json) where T : IWizardSchema
         {
-            if (string.IsNullOrEmpty(json))
-            {
-                throw new ArgumentException(ExceptionMessages.InvalidJson, nameof(json));
-            }
+            ValidationUtils.ArgumentNotNullOrEmpty(json, nameof(json), ExceptionMessages.InvalidJson);
 
             return JsonConvert.DeserializeObject<T>(json)
                 ?? throw new ArgumentException(ExceptionMessages.InvalidConfigurationFileFormat, nameof(json));
@@ -167,10 +155,7 @@ namespace APIWizard.Builders
 
         private static T? DeserializeSchemaFromSection<T>(IConfigurationSection section) where T : class, IWizardSchema
         {
-            if (section == null)
-            {
-                throw new ArgumentNullException(nameof(section));
-            }
+            ValidationUtils.ArgumentNotNull(section, nameof(section));
 
             return section.Get<T>(options =>
             {

@@ -7,10 +7,7 @@ namespace APIWizard.Utils
     {
         internal static HttpMethod ConvertToHttpMethod(string method)
         {
-            if (string.IsNullOrEmpty(method))
-            {
-                throw new ArgumentNullException(nameof(method));
-            }
+            ValidationUtils.ArgumentNotNullOrEmpty(method, nameof(method));
             return new HttpMethod(method);
         }
         internal static string CombineUri(string host, string basePath, string route, ICollection<string> schemes)
@@ -22,14 +19,9 @@ namespace APIWizard.Utils
         }
         internal static string CombineUri(string? server, string route)
         {
-            if (string.IsNullOrEmpty(server))
-            {
-                throw new ArgumentNullException(nameof(server));
-            }
-            if (string.IsNullOrEmpty(route))
-            {
-                throw new ArgumentNullException(nameof(route));
-            }
+            ValidationUtils.ArgumentNotNullOrEmpty(server, nameof(server));
+            ValidationUtils.ArgumentNotNullOrEmpty(route, nameof(route));
+
             return $"{server.Trim()}/{route.Trim('/')}";
         }
         internal static string GetPreferredScheme(ICollection<string> schemes)
@@ -45,8 +37,7 @@ namespace APIWizard.Utils
         }
         internal static IEnumerable<KeyValuePair<TKey, TValue>> ConvertToEnumerable<TKey, TValue>(IDictionary dictionary)
         {
-            if (dictionary == null)
-                throw new ArgumentNullException(nameof(dictionary));
+            ValidationUtils.ArgumentNotNull(dictionary, nameof(dictionary));
 
             foreach (DictionaryEntry entry in dictionary)
             {

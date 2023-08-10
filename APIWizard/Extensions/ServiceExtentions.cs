@@ -1,4 +1,5 @@
 ﻿using APIWizard.Constants;
+using APIWizard.Utils;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace APIWizard.Extensions
@@ -16,16 +17,9 @@ namespace APIWizard.Extensions
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="services"/> or <paramref name="apiClient"/> is null.</exception>
         public static void AddAPIWizardClient(this IServiceCollection services, IAPIClient apiClient)
         {
-            if (services == null)
-            {
-                throw new ArgumentNullException(nameof(services), ExceptionMessages.ServiceCollectionNull);
-            }
-
-            if (apiClient == null)
-            {
-                throw new ArgumentNullException(nameof(apiClient), ExceptionMessages.APIClientNull);
-            }
-
+            ValidationUtils.ArgumentNotNull(services, nameof(services), ExceptionMessages.ServiceCollectionNull);
+            ValidationUtils.ArgumentNotNull(apiClient, nameof(apiClient), ExceptionMessages.APIClientNull);
+            
             services.AddSingleton(apiClient);
         }
     }
