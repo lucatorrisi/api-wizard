@@ -9,14 +9,14 @@ namespace APIWizard.Utils
 {
     internal static class ValidationUtils
     {
-        public static void ArgumentNotNull([NotNull] object? value, string parameterName, string message = null)
+        internal static void ArgumentNotNull([NotNull] object? value, string parameterName, string message = null)
         {
             if (value == null)
             {
                 throw new ArgumentNullException(parameterName, message);
             }
         }
-        public static void ArgumentNotNullOrEmpty([NotNull] string value, string parameterName, string message = null)
+        internal static void ArgumentNotNullOrEmpty([NotNull] string value, string parameterName, string message = null)
         {
             if (string.IsNullOrEmpty(value))
             {
