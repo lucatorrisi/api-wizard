@@ -1,16 +1,21 @@
-﻿using System;
-
-namespace APIWizard.Constants
+﻿namespace APIWizard.Constants
 {
     public class ExceptionMessages
     {
         public const string InvalidFilePath = "Invalid file path";
-        public const string ConfigurationFileNotFound = "Configuration file not found";
+        public const string InvalidPathName = "Path name cannot be null or empty";
+        public const string InvalidMethod = "Method cannot be null or empty";
+        public const string HttpClientNotInitialized = "HttpClient instance is not initialized.";
+        public const string ConfigurationFileNotFound = "Configuration file not found at path:";
+        public const string FailedReadConfigurationFile = "Failed to read configuration file:";
+        public const string ConfigurationSectionNull = "Configuration section cannot be null";
+        public const string FailedRetrieveRemoteConfig = "Failed to retrieve OpenAPI configuration:";
         public const string InvalidOpenAPIVersionNone = "OpenAPIVersion cannot be None";
-        public const string InvalidOpenAPIVersion = "Invalid OpenAPIVersion";
+        public const string InvalidOpenAPIVersion = "Invalid OpenAPIVersion specified";
         public const string InvalidConfiguration = "Invalid configuration";
         public const string SchemaIsNull = "Schema is null";
         public const string InvalidJson = "JSON string is null or empty";
+        public const string InvalidOpenAPIConfigurationUrl = "OpenAPI URL string is null or empty";
         public const string InvalidConfigurationFileFormat = "Invalid configuration file format";
         public const string ServiceCollectionNull = "The services collection cannot be null";
         public const string APIClientNull = "The API client instance cannot be null";

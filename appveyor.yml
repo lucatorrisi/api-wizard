@@ -1,4 +1,4 @@
-version: 1.0.{build}
+version: 1.1.0
 
 branches:
   only:
@@ -26,4 +26,4 @@ artifacts:
 deploy:
 - provider: Environment
   name: api-wizard-nuget
-  artifact: 'APIWizard.1.0.{build}.nupkg'
+  artifact: 'APIWizard.1.1.0.nupkg'

@@ -10,5 +10,6 @@ namespace APIWizard.Constants
     {
         public const string ApplicationJson = "application/json";
         public const string MultipartFormData = "multipart/form-data";
+        public const string FormUrlEncoded = "application/x-www-form-urlencoded";
     }
 }

@@ -1,4 +1,5 @@
 ﻿using APIWizard.Constants;
+using System.Collections;
 
 namespace APIWizard.Utils
 {
@@ -40,6 +41,16 @@ namespace APIWizard.Utils
             else
             {
                 return HttpClientDefaults.HttpSchema;
+            }
+        }
+        internal static IEnumerable<KeyValuePair<TKey, TValue>> ConvertToEnumerable<TKey, TValue>(IDictionary dictionary)
+        {
+            if (dictionary == null)
+                throw new ArgumentNullException(nameof(dictionary));
+
+            foreach (DictionaryEntry entry in dictionary)
+            {
+                yield return new KeyValuePair<TKey, TValue>((TKey)entry.Key, (TValue)entry.Value);
             }
         }
     }

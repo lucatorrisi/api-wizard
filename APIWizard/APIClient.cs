@@ -2,6 +2,7 @@
 using APIWizard.Exceptions;
 using APIWizard.Models.Configuration;
 using APIWizard.Models.Interfaces;
+using APIWizard.Models.Response;
 using Newtonsoft.Json;
 using System;
 using System.Net.Http;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 namespace APIWizard
 {
     /// <summary>
-    /// Represents an API client for making HTTP requests.
+    /// Represents the APIWizard client for making HTTP requests.
     /// </summary>
     public class APIClient : IAPIClient
     {
@@ -28,43 +29,96 @@ namespace APIWizard
             this.schema = schema;
         }
 
-        public async Task<TResult> SendRequestAsync<TResult>(string pathName, CancellationToken cancellationToken = default)
+        public async Task<APIResponse<TResult>> SendRequestAsync<TResult>(string pathName, CancellationToken cancellationToken = default)
         {
-            return await ExecuteRequestAsync<TResult>(pathName, HttpClientDefaults.GetHttpMethod, cancellationToken: cancellationToken);
+            return await ExecuteRequestAsync<TResult>(pathName, HttpClientDefaults.GetHttpMethod, null, null, default, cancellationToken: cancellationToken);
         }
 
-        public async Task<TResult> SendRequestAsync<TResult>(string pathName, TResult defaultResult = default, CancellationToken cancellationToken = default)
+        public async Task<APIResponse<TResult>> SendRequestAsync<TResult>(string pathName, TResult defaultResult, CancellationToken cancellationToken = default)
         {
-            return await ExecuteRequestAsync(pathName, HttpClientDefaults.GetHttpMethod, defaultValue: defaultResult, cancellationToken: cancellationToken);
+            return await ExecuteRequestAsync(pathName, HttpClientDefaults.GetHttpMethod, null, null, defaultResult, cancellationToken: cancellationToken);
         }
 
-        public async Task<TResult> SendRequestAsync<TResult>(string pathName, string method, object requestBody, string server, TResult defaultValue, CancellationToken cancellationToken)
+        public async Task<APIResponse<TResult>> SendRequestAsync<TResult>(string pathName, string method, CancellationToken cancellationToken = default)
         {
-            return await ExecuteRequestAsync(pathName, method, requestBody, server, defaultValue: defaultValue, cancellationToken: cancellationToken);
+            return await ExecuteRequestAsync<TResult>(pathName, method, null, null, default, cancellationToken: cancellationToken);
         }
 
-        private async Task<TResult> ExecuteRequestAsync<TResult>(string pathName, string method, object requestBody = null, string server = null, TResult defaultValue = default, CancellationToken cancellationToken = default)
+        public async Task<APIResponse<TResult>> SendRequestAsync<TResult>(string pathName, string method, TResult defaultResult, CancellationToken cancellationToken = default)
+        {
+            return await ExecuteRequestAsync(pathName, method, null, null, defaultResult, cancellationToken: cancellationToken);
+        }
+
+        public async Task<APIResponse<TResult>> SendRequestAsync<TResult>(string pathName, string method, object requestBody, CancellationToken cancellationToken = default)
+        {
+            return await ExecuteRequestAsync<TResult>(pathName, method, requestBody, null, default, cancellationToken: cancellationToken);
+        }
+
+        public async Task<APIResponse<TResult>> SendRequestAsync<TResult>(string pathName, string method, object requestBody, TResult defaultResult, CancellationToken cancellationToken = default)
+        {
+            return await ExecuteRequestAsync(pathName, method, requestBody, null, defaultResult, cancellationToken: cancellationToken);
+        }
+
+        public async Task<APIResponse<TResult>> SendRequestAsync<TResult>(string pathName, string method, object requestBody, string server, CancellationToken cancellationToken = default)
+        {
+            return await ExecuteRequestAsync<TResult>(pathName, method, requestBody, server, default, cancellationToken: cancellationToken);
+        }
+
+        public async Task<APIResponse<TResult>> SendRequestAsync<TResult>(string pathName, string method, object requestBody, string server, TResult defaultResult, CancellationToken cancellationToken = default)
+        {
+            return await ExecuteRequestAsync(pathName, method, requestBody, server, defaultResult, cancellationToken: cancellationToken);
+        }
+
+        private async Task<APIResponse<TResult>> ExecuteRequestAsync<TResult>(
+            string pathName,
+            string method,
+            object? requestBody,
+            string? server,
+            TResult? defaultValue = default,
+            CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(pathName))
-                throw new ArgumentNullException(nameof(pathName));
-            if (string.IsNullOrEmpty(method))
-                throw new ArgumentNullException(nameof(method));
+            {
+                throw new ArgumentNullException(nameof(pathName), ExceptionMessages.InvalidPathName);
+            }
 
-            var requestMessage = schema.BuildRequest(pathName, requestBody, method, server) ?? throw new APIClientException(ExceptionMessages.ErrorBuildingRequest);
+            if (string.IsNullOrEmpty(method))
+            {
+                throw new ArgumentNullException(nameof(method), ExceptionMessages.InvalidMethod);
+            }
+
+            if (httpClient == null)
+            {
+                throw new InvalidOperationException(ExceptionMessages.HttpClientNotInitialized);
+            }
+
+            var requestMessage = schema.BuildRequest(pathName, requestBody, method, server)
+                                  ?? throw new APIClientException(ExceptionMessages.ErrorBuildingRequest);
 
             try
             {
-                using var response = await httpClient.SendAsync(requestMessage, cancellationToken);
-                var jsonResponse = await response.Content.ReadAsStringAsync(cancellationToken);
-                return JsonConvert.DeserializeObject<TResult>(jsonResponse) ?? defaultValue;
+                var response = await httpClient.SendAsync(requestMessage, cancellationToken);
+                return await HandleResponseAsync(response, defaultValue, cancellationToken);
             }
-            catch (JsonException ex)
-            {
-                throw new APIClientException(ExceptionMessages.DeserializationError, ex);
-            }
-            catch (Exception ex)
+            catch (HttpRequestException ex)
             {
                 throw new APIClientException(ExceptionMessages.ErrorSendingRequest, ex);
+            }
+        }
+
+
+        private static async Task<APIResponse<TResult>> HandleResponseAsync<TResult>(HttpResponseMessage response, TResult defaultValue, CancellationToken cancellationToken)
+        {
+            var jsonResponse = await response.Content.ReadAsStringAsync(cancellationToken);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var content = JsonConvert.DeserializeObject<TResult>(jsonResponse) ?? defaultValue;
+                return new APIResponse<TResult>(response, content);
+            }
+            else
+            {
+                return new APIResponse<TResult>(response, defaultValue);
             }
         }
     }

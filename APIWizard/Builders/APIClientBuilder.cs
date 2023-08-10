@@ -36,15 +36,22 @@ namespace APIWizard.Builders
                 throw new ArgumentException(ExceptionMessages.InvalidFilePath, nameof(path));
             }
 
-            string fullPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly()?.Location ?? string.Empty) ?? string.Empty, path);
+            string fullPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly()?.Location) ?? string.Empty, path);
             if (!File.Exists(fullPath))
             {
-                throw new FileNotFoundException(ExceptionMessages.ConfigurationFileNotFound, path);
+                throw new FileNotFoundException($"{ExceptionMessages.ConfigurationFileNotFound} {fullPath}", path);
             }
 
-            jsonSchema = File.ReadAllText(fullPath);
-            configurationType = ConfigurationType.Json;
-            return this;
+            try
+            {
+                jsonSchema = File.ReadAllText(fullPath);
+                configurationType = ConfigurationType.Json;
+                return this;
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"{ExceptionMessages.FailedReadConfigurationFile} {ex.Message}", ex);
+            }
         }
 
         /// <summary>
@@ -54,7 +61,7 @@ namespace APIWizard.Builders
         /// <returns>The current APIClientBuilder instance.</returns>
         public APIClientBuilder WithConfiguration(IConfigurationSection section)
         {
-            configurationSection = section ?? throw new ArgumentNullException(nameof(section));
+            configurationSection = section ?? throw new ArgumentNullException(nameof(section), ExceptionMessages.ConfigurationSectionNull);
             configurationType = ConfigurationType.Section;
             return this;
         }
@@ -62,15 +69,28 @@ namespace APIWizard.Builders
         /// <summary>
         /// Sets the OpenAPI URL configuration.
         /// </summary>
-        /// <param name="jsonSwaggerUrl">The URL of the JSON Swagger.</param>
+        /// <param name="jsonOpenApiUrl">The URL of the JSON Open API.</param>
         /// <returns>The current APIClientBuilder instance.</returns>
-        public APIClientBuilder WithOpenAPIUrlConfiguration(string jsonSwaggerUrl)
+        public APIClientBuilder WithOpenAPIUrlConfigurationAsync(string jsonOpenApiUrl)
         {
+            if (string.IsNullOrEmpty(jsonOpenApiUrl))
+            {
+                throw new ArgumentException(ExceptionMessages.InvalidOpenAPIConfigurationUrl, nameof(jsonOpenApiUrl));
+            }
+
             using var httpClient = new HttpClient();
-            jsonSchema = httpClient.GetStringAsync(jsonSwaggerUrl).Result;
-            configurationType = ConfigurationType.Json;
-            return this;
+            try
+            {
+                jsonSchema = httpClient.GetStringAsync(jsonOpenApiUrl).Result;
+                configurationType = ConfigurationType.Json;
+                return this;
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"{ExceptionMessages.FailedRetrieveRemoteConfig} {ex.Message}", ex);
+            }
         }
+
 
         /// <summary>
         /// Sets the OpenAPI version.
@@ -81,7 +101,7 @@ namespace APIWizard.Builders
         {
             if (openApiVersion == OpenAPIVersion.None)
             {
-                throw new ArgumentException(ExceptionMessages.InvalidOpenAPIVersion);
+                throw new ArgumentException(ExceptionMessages.InvalidOpenAPIVersion, nameof(openApiVersion));
             }
 
             this.openApiVersion = openApiVersion;
@@ -128,13 +148,11 @@ namespace APIWizard.Builders
                 throw new InvalidOperationException(ExceptionMessages.InvalidConfiguration);
             }
 
-            if (schema == null)
-            {
-                throw new InvalidOperationException(ExceptionMessages.SchemaIsNull);
-            }
-
-            return new APIClient(options, schema);
+            return schema != null
+                ? new APIClient(options, schema)
+                : throw new InvalidOperationException(ExceptionMessages.SchemaIsNull);
         }
+
 
         private static T DeserializeSchemaFromJson<T>(string json) where T : IWizardSchema
         {
