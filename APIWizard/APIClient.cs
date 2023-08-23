@@ -24,7 +24,8 @@ namespace APIWizard
         {
             var handler = new SocketsHttpHandler
             {
-                PooledConnectionLifetime = options.PooledConnectionLifetime
+                PooledConnectionLifetime = options.PooledConnectionLifetime,
+                UseCookies = false
             };
             httpClient = new HttpClient(handler);
             this.schema = schema;

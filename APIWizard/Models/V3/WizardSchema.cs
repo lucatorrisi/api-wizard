@@ -40,9 +40,8 @@ namespace APIWizard.Models.V3
                 }
 
                 request = new HttpRequestMessage(
-                    HttpRequestUtils.ConvertToHttpMethod(method),
-                    GetUri(pathName)).AddInputData(inputData, pathDetail?.GetContentType()
-                    );
+                    HttpRequestUtils.ConvertToHttpMethod(method), GetUri(pathName))
+                    .AddInputData(inputData, pathDetail?.GetContentType(), pathDetail?.Parameters);
             }
 
             return request;

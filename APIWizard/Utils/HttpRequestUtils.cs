@@ -35,14 +35,5 @@ namespace APIWizard.Utils
                 return HttpClientDefaults.HttpSchema;
             }
         }
-        internal static IEnumerable<KeyValuePair<TKey, TValue>> ConvertToEnumerable<TKey, TValue>(IDictionary dictionary)
-        {
-            ValidationUtils.ArgumentNotNull(dictionary, nameof(dictionary));
-
-            foreach (DictionaryEntry entry in dictionary)
-            {
-                yield return new KeyValuePair<TKey, TValue>((TKey)entry.Key, (TValue)entry.Value);
-            }
-        }
     }
 }

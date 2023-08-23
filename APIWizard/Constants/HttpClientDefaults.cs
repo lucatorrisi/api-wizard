@@ -7,6 +7,9 @@
         public const string HttpsSchema = "https";
         public const string HttpSchema = "http";
         public const string MultipartFormDataName = "file";
+        public const string Cookie = "Cookie";
+        public const string Body = "body";
+        public const string BlankUri = "about:blank";
 
         public const string GetHttpMethod = "GET";
         public const string PostHttpMethod = "POST";

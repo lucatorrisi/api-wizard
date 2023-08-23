@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using APIWizard.Enums;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,7 @@ namespace APIWizard.Models.Abstracts
         [JsonProperty("name")]
         internal string Name { get; set; }
         [JsonProperty("in")]
-        internal string In { get; set; }
+        internal ParameterType In { get; set; }
         [JsonProperty("description")]
         internal string Description { get; set; }
         [JsonProperty("required")]
