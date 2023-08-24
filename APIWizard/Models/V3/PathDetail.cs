@@ -1,6 +1,7 @@
 ﻿using APIWizard.Models.Abstracts;
-using APIWizard.Models.Interfaces;
+using APIWizard.Extensions;
 using Newtonsoft.Json;
+using APIWizard.Enums;
 
 namespace APIWizard.Models.V3
 {
@@ -14,6 +15,26 @@ namespace APIWizard.Models.V3
         internal override string? GetContentType()
         {
             return RequestBody?.Content?.Type;
+        }
+        internal override bool HasBodyParameter()
+        {
+            return RequestBody != null;
+        }
+        internal override bool IsBodyRequired()
+        {
+            return HasBodyParameter() && RequestBody.Required;
+        }
+        internal override void AddDummyBodyParam()
+        {
+            if(HasBodyParameter())
+            {
+                Parameters = Parameters?.Add(new Parameter
+                {
+                    In = ParameterType.Body,
+                    Required = IsBodyRequired()
+
+                });
+            }
         }
     }
 }

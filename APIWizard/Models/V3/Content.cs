@@ -9,6 +9,6 @@ namespace APIWizard.Models.V3
 
         [JsonProperty("application/json")]
         [ConfigurationKeyName("application/json")]
-        private object ApplicationJson { get { return default; } set { Type = value.ToString(); } }
+        private object ApplicationJson { get { return default; } set { Type = "application/json"; } }
     }
 }

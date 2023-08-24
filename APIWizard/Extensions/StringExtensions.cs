@@ -1,17 +1,17 @@
-﻿using System.Text.RegularExpressions;
+﻿using APIWizard.Constants;
+using System.Text.RegularExpressions;
 
 namespace APIWizard.Extensions
 {
-    public static class StringExtensions
+    internal static class StringExtensions
     {
-        public static bool ContainsCurlyBraces(this string inputString)
+        internal static bool ContainsCurlyBraces(this string inputString)
         {
             if (inputString == null)
             {
                 return false;
             }
-            string pattern = @"\{[^\}]+\}";
-            return Regex.IsMatch(inputString, pattern);
+            return Regex.IsMatch(inputString, Common.CurlyBracesPattern);
         }
     }
 }

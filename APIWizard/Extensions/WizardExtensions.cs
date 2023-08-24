@@ -10,13 +10,19 @@ using APIWizard.Constants;
 using APIWizard.Enums;
 using APIWizard.Exceptions;
 using APIWizard.Models.Abstracts;
+using APIWizard.Utils;
 using Newtonsoft.Json;
 
 namespace APIWizard.Extensions
 {
     internal static class WizardExtensions
     {
-        internal static HttpRequestMessage AddInputData(this HttpRequestMessage httpRequestMessage, object? inputData = null, string? contentType = null, ParameterBase[]? parameters = null)
+        internal static HttpRequestMessage AddInputData(
+            this HttpRequestMessage httpRequestMessage,
+            object? inputData = null,
+            string? contentType = null,
+            ParameterBase[]? parameters = null,
+            bool isBodyRequired = false)
         {
             if (inputData == null)
             {
@@ -25,14 +31,14 @@ namespace APIWizard.Extensions
 
             try
             {
-                NormalizeAndAddInputToRequest(httpRequestMessage, parameters, inputData, contentType);
+                NormalizeAndAddInputToRequest(httpRequestMessage, parameters, inputData, contentType, isBodyRequired);
+            }
+            catch (JsonSerializationException ex)
+            {
+                throw new APIClientException(ExceptionMessages.SerializationError, ex);
             }
             catch (Exception ex)
             {
-                if (ex is JsonSerializationException)
-                {
-                    throw new APIClientException(ExceptionMessages.SerializationError, ex);
-                }
                 throw new APIClientException(ExceptionMessages.UnexpectedError, ex);
             }
 
@@ -57,8 +63,7 @@ namespace APIWizard.Extensions
             }
         }
 
-
-        private static void NormalizeAndAddInputToRequest(HttpRequestMessage request, ParameterBase[]? parameters, object inputData, string contentType)
+        private static void NormalizeAndAddInputToRequest(HttpRequestMessage request, ParameterBase[]? parameters, object inputData, string contentType, bool isBodyRequired)
         {
             if (parameters == null)
             {
@@ -72,29 +77,11 @@ namespace APIWizard.Extensions
                 switch (parameterGroup.Key)
                 {
                     case ParameterType.Body:
-                        var parameterValue = GetValueFromInputData(inputData, HttpClientDefaults.Body);
-                        var content = CreateStringContent(parameterValue ?? inputData, contentType);
-                        request.Content = content;
+                        ProcessBodyParameter(request, inputData, contentType, isBodyRequired);
                         break;
 
                     case ParameterType.FormData:
-                        var formDataValues = new List<(string Key, object? Value)>();
-                        foreach (var parameter in parameterGroup)
-                        {
-                            var value = GetValueFromInputData(inputData, parameter.Name);
-                            formDataValues.Add((parameter.Name, value));
-                        }
-
-                        if (string.Equals(contentType, ContentTypes.MultipartFormData, StringComparison.OrdinalIgnoreCase))
-                        {
-                            var formData = CreateMultipartFormDataContent(formDataValues);
-                            request.Content = formData;
-                        }
-                        else if (string.Equals(contentType, ContentTypes.FormUrlEncoded, StringComparison.OrdinalIgnoreCase))
-                        {
-                            var formData = CreateFormUrlEncodedContent(formDataValues);
-                            request.Content = formData;
-                        }
+                        ProcessFormDataParameter(request, parameterGroup, inputData, contentType);
                         break;
 
                     case ParameterType.Path:
@@ -118,6 +105,48 @@ namespace APIWizard.Extensions
             request.SetCookie(cookieContainer);
         }
 
+        private static void ProcessBodyParameter(HttpRequestMessage request, object inputData, string contentType, bool isBodyRequired)
+        {
+            var parameterValue = GetValueFromInputData(inputData, HttpClientDefaults.Body);
+            if (isBodyRequired)
+            {
+                ValidationUtils.ParameterNotNull(parameterValue, nameof(HttpClientDefaults.Body), ExceptionMessages.MissingRequiredParameter);
+            }
+
+            var content = CreateStringContent(parameterValue ?? inputData, contentType);
+            request.Content = content;
+        }
+
+        private static void ProcessFormDataParameter(HttpRequestMessage request, IEnumerable<ParameterBase> parameterGroup, object inputData, string contentType)
+        {
+            var formDataValues = new List<(string Key, object? Value)>();
+            foreach (var parameter in parameterGroup)
+            {
+                var value = GetValueFromInputData(inputData, parameter.Name);
+                if (parameter.Required)
+                {
+                    ValidationUtils.ParameterNotNull(value, parameter.Name, ExceptionMessages.MissingRequiredParameter);
+                }
+                formDataValues.Add((parameter.Name, value));
+            }
+
+            HttpContent formData;
+            if (string.Equals(contentType, ContentTypes.MultipartFormData, StringComparison.OrdinalIgnoreCase))
+            {
+                formData = CreateMultipartFormDataContent(formDataValues);
+            }
+            else if (string.Equals(contentType, ContentTypes.FormUrlEncoded, StringComparison.OrdinalIgnoreCase))
+            {
+                formData = CreateFormUrlEncodedContent(formDataValues);
+            }
+            else
+            {
+                throw new APIClientException(ExceptionMessages.ContentTypeNotSupported);
+            }
+
+            request.Content = formData;
+        }
+
         private static void ReplacePathParameters(HttpRequestMessage request, IEnumerable<ParameterBase> parameters, object inputData)
         {
             var originalUri = request.RequestUri?.ToString();
@@ -126,12 +155,16 @@ namespace APIWizard.Extensions
                 originalUri = originalUri.ToLowerInvariant();
             }
 
-            foreach (var parameterBase in parameters)
+            foreach (var parameter in parameters)
             {
-                string parameterName = "{" + parameterBase.Name + "}";
+                string parameterName = "{" + parameter.Name + "}";
                 var parameterValue = Convert.ToString(GetValueFromInputData(inputData, parameterName));
+                if (parameter.Required)
+                {
+                    ValidationUtils.ParameterNotNullOrEmpty(parameterValue, parameter.Name, ExceptionMessages.MissingRequiredParameter);
+                }
 
-                originalUri = originalUri?.Replace(parameterName, Uri.EscapeDataString(parameterValue ?? string.Empty));
+                originalUri = originalUri.Replace(parameterName, Uri.EscapeDataString(parameterValue ?? string.Empty));
             }
 
             request.RequestUri = new Uri(originalUri ?? string.Empty);
@@ -139,33 +172,51 @@ namespace APIWizard.Extensions
 
         private static void AddQueryParameters(HttpRequestMessage request, IEnumerable<ParameterBase> parameters, object inputData)
         {
-            foreach (var parameterBase in parameters)
+            var uriBuilder = new UriBuilder(request.RequestUri ?? new Uri(HttpClientDefaults.BlankUri));
+            var query = uriBuilder.Query;
+
+            foreach (var parameter in parameters)
             {
-                var parameterValue = Convert.ToString(GetValueFromInputData(inputData, parameterBase.Name));
-                var uriBuilder = new UriBuilder(request.RequestUri ?? new Uri(HttpClientDefaults.BlankUri));
-                var query = uriBuilder.Query;
-                query += string.IsNullOrEmpty(query) ? $"{parameterBase.Name}={parameterValue}" : $"&{parameterBase.Name}={parameterValue}";
-                uriBuilder.Query = query;
-                request.RequestUri = uriBuilder.Uri;
+                var parameterValue = Convert.ToString(GetValueFromInputData(inputData, parameter.Name));
+                if (parameter.Required)
+                {
+                    ValidationUtils.ParameterNotNullOrEmpty(parameterValue, parameter.Name, ExceptionMessages.MissingRequiredParameter);
+                }
+
+                query += string.IsNullOrEmpty(query) ? $"{parameter.Name}={parameterValue}" : $"&{parameter.Name}={parameterValue}";
             }
+
+            uriBuilder.Query = query;
+            request.RequestUri = uriBuilder.Uri;
         }
 
         private static void AddHeaders(HttpRequestMessage request, IEnumerable<ParameterBase> parameters, object inputData)
         {
-            foreach (var parameterBase in parameters)
+            foreach (var parameter in parameters)
             {
-                var parameterValue = Convert.ToString(GetValueFromInputData(inputData, parameterBase.Name));
-                request.Headers.Add(parameterBase.Name, parameterValue);
+                var parameterValue = Convert.ToString(GetValueFromInputData(inputData, parameter.Name));
+                if (parameter.Required)
+                {
+                    ValidationUtils.ParameterNotNullOrEmpty(parameterValue, parameter.Name, ExceptionMessages.MissingRequiredParameter);
+                }
+
+                request.Headers.Add(parameter.Name, parameterValue);
             }
         }
 
         private static void AddCookies(HttpRequestMessage request, IEnumerable<ParameterBase> parameters, object inputData, CookieCollection cookieContainer)
         {
-            foreach (var parameterBase in parameters)
+            foreach (var parameter in parameters)
             {
-                var parameterValue = Convert.ToString(GetValueFromInputData(inputData, parameterBase.Name));
-                cookieContainer.Add(new Cookie(parameterBase.Name, parameterValue));
+                var parameterValue = Convert.ToString(GetValueFromInputData(inputData, parameter.Name));
+                if (parameter.Required)
+                {
+                    ValidationUtils.ParameterNotNullOrEmpty(parameterValue, parameter.Name, ExceptionMessages.MissingRequiredParameter);
+                }
+
+                cookieContainer.Add(new Cookie(parameter.Name, parameterValue));
             }
+
             request.SetCookie(cookieContainer);
         }
 
@@ -213,4 +264,3 @@ namespace APIWizard.Extensions
         }
     }
 }
-

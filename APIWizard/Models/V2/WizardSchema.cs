@@ -2,6 +2,7 @@
 using APIWizard.Extensions;
 using APIWizard.Models.Abstracts;
 using APIWizard.Models.Interfaces;
+using APIWizard.Models.V3;
 using APIWizard.Utils;
 using Newtonsoft.Json;
 
@@ -24,31 +25,39 @@ namespace APIWizard.Models.V2
             HttpRequestMessage request = null;
 
             if (Paths == null)
-                throw new InvalidOperationException("Error");
+                throw new InvalidOperationException(ExceptionMessages.NoPathsFound);
 
             if (Paths.TryGetValue(pathName, out var path))
             {
                 if (path == null)
-                    throw new InvalidOperationException("Error");
-                
-                PathDetail? pathDetail;
-                if (method != null && path.TryGetValue(method, out pathDetail))
+                    throw new InvalidOperationException(ExceptionMessages.PathNotFound);
+
+                if (method != null && path.TryGetValue(method, out PathDetail? pathDetail))
                 {
                     if (pathDetail == null)
-                        throw new InvalidOperationException("Error");
+                        throw new InvalidOperationException(ExceptionMessages.MethodNotFound);
                 }
                 else
                 {
                     method = path.FirstOrDefault().Key;
                     pathDetail = path.FirstOrDefault().Value;
+                    if (pathDetail == null)
+                        throw new InvalidOperationException(ExceptionMessages.NoDefaultMethodFound);
                 }
 
                 request = new HttpRequestMessage(
                     HttpRequestUtils.ConvertToHttpMethod(method), GetUri(pathName))
-                    .AddInputData(inputData, pathDetail?.GetContentType(), pathDetail?.Parameters);
+                    .AddInputData(inputData, pathDetail?.GetContentType(), pathDetail?.Parameters, pathDetail.IsBodyRequired());
             }
 
             return request;
+        }
+
+        public void AddServers(List<string> servers)
+        {
+            ValidationUtils.ArgumentNotNull(servers, nameof(servers));
+            if (servers.Any())
+                BasePath = servers.First();
         }
 
         internal override Uri GetUri(string route)

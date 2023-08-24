@@ -25,5 +25,10 @@
         public const string SerializationError = "Unable to serialize the request body to JSON";
         public const string ContentTypeNotSupported = "Content type not supported";
         public const string UnexpectedError = "An unexpected error occurred";
+        public const string MissingRequiredParameter = "Missing required parameter: {0}";
+        public const string NoPathsFound = "The 'Paths' collection is null";
+        public const string PathNotFound = "The specified path name does not exist in the 'Paths' collection";
+        public const string MethodNotFound = "The specified method does not exist in the path details";
+        public const string NoDefaultMethodFound = "No default method a found for the specified path name";
     }
 }

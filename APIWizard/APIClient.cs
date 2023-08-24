@@ -33,12 +33,17 @@ namespace APIWizard
 
         public async Task<APIResponse<TResult>> SendRequestAsync<TResult>(string pathName, CancellationToken cancellationToken = default)
         {
-            return await ExecuteRequestAsync<TResult>(pathName, HttpClientDefaults.GetHttpMethod, null, null, default, cancellationToken: cancellationToken);
+            return await ExecuteRequestAsync<TResult>(pathName, null, null, null, default, cancellationToken: cancellationToken);
+        }
+
+        public async Task<APIResponse<TResult>> SendRequestAsync<TResult>(string pathName, object inputData, CancellationToken cancellationToken = default)
+        {
+            return await ExecuteRequestAsync<TResult>(pathName, null, inputData, null, default, cancellationToken: cancellationToken);
         }
 
         public async Task<APIResponse<TResult>> SendRequestAsync<TResult>(string pathName, TResult defaultResult, CancellationToken cancellationToken = default)
         {
-            return await ExecuteRequestAsync(pathName, HttpClientDefaults.GetHttpMethod, null, null, defaultResult, cancellationToken: cancellationToken);
+            return await ExecuteRequestAsync(pathName, null, null, null, defaultResult, cancellationToken: cancellationToken);
         }
 
         public async Task<APIResponse<TResult>> SendRequestAsync<TResult>(string pathName, string method, CancellationToken cancellationToken = default)
@@ -80,7 +85,6 @@ namespace APIWizard
             CancellationToken cancellationToken = default)
         {
             ValidationUtils.ArgumentNotNullOrEmpty(pathName, nameof(pathName), ExceptionMessages.InvalidPathName);
-            ValidationUtils.ArgumentNotNullOrEmpty(method, nameof(method), ExceptionMessages.InvalidMethod);
 
             if (httpClient == null)
             {

@@ -10,5 +10,6 @@ namespace APIWizard.Models.Configuration
     public class APIWizardOptions
     {
         public TimeSpan PooledConnectionLifetime { get; set; } = HttpClientDefaults.PooledConnectionLifetime;
+        public List<string> AdditionalServers { get; set; } = new List<string>();
     }
 }

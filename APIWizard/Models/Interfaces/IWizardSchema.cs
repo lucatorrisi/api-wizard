@@ -3,5 +3,6 @@
     internal interface IWizardSchema
     {
         internal HttpRequestMessage? BuildRequest(string pathName, object? inputData, string method = null, string server = null);
+        internal void AddServers(List<string> servers);
     }
 }

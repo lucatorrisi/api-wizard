@@ -139,6 +139,8 @@ namespace APIWizard.Builders
                 throw new InvalidOperationException(ExceptionMessages.InvalidConfiguration);
             }
 
+            schema?.AddServers(options.AdditionalServers);
+
             return schema != null
                 ? new APIClient(options, schema)
                 : throw new InvalidOperationException(ExceptionMessages.SchemaIsNull);

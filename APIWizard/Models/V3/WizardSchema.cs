@@ -10,7 +10,7 @@ namespace APIWizard.Models.V3
     internal class WizardSchema : WizardSchemaBase, IWizardSchema
     {
         [JsonProperty("servers")]
-        internal Server[]? Servers { get; set; }
+        internal List<Server>? Servers { get; set; } = new List<Server>();
         [JsonProperty("paths")]
         public Dictionary<string, Dictionary<string, PathDetail?>>? Paths { get; set; }
 
@@ -20,31 +20,43 @@ namespace APIWizard.Models.V3
             HttpRequestMessage? request = null;
 
             if (Paths == null)
-                throw new InvalidOperationException("Error");
+                throw new InvalidOperationException(ExceptionMessages.NoPathsFound);
 
             if (Paths.TryGetValue(pathName, out var path))
             {
                 if (path == null)
-                    throw new InvalidOperationException("Error");
+                    throw new InvalidOperationException(ExceptionMessages.PathNotFound);
 
-                PathDetail? pathDetail;
-                if (method != null && path.TryGetValue(method, out pathDetail))
+                if (method != null && path.TryGetValue(method, out PathDetail? pathDetail))
                 {
                     if (pathDetail == null)
-                        throw new InvalidOperationException("Error");
+                        throw new InvalidOperationException(ExceptionMessages.MethodNotFound);
                 }
                 else
                 {
                     method = path.FirstOrDefault().Key;
                     pathDetail = path.FirstOrDefault().Value;
+                    if (pathDetail == null)
+                        throw new InvalidOperationException(ExceptionMessages.NoDefaultMethodFound);
                 }
 
+                pathDetail.AddDummyBodyParam();
+
                 request = new HttpRequestMessage(
-                    HttpRequestUtils.ConvertToHttpMethod(method), GetUri(pathName))
-                    .AddInputData(inputData, pathDetail?.GetContentType(), pathDetail?.Parameters);
+                HttpRequestUtils.ConvertToHttpMethod(method), GetUri(server, pathName))
+                .AddInputData(inputData, pathDetail?.GetContentType(), pathDetail?.Parameters, pathDetail?.IsBodyRequired() ?? false);
             }
 
             return request;
+        }
+
+        public void AddServers(List<string> servers)
+        {
+            ValidationUtils.ArgumentNotNull(servers, nameof(servers));
+            Servers?.AddRange(servers.Select(s => new Server
+            {
+                Url = s
+            }));
         }
 
         internal override Uri GetUri(string route)
