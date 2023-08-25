@@ -53,7 +53,7 @@ namespace APIWizard.Extensions
             return httpRequestMessage;
         }
 
-        private static void SetCookie(this HttpRequestMessage httpRequestMessage, CookieCollection? cookieCollection = null)
+        internal static void SetCookie(this HttpRequestMessage httpRequestMessage, CookieCollection? cookieCollection = null)
         {
             if (cookieCollection == null || cookieCollection.Count == 0)
             {
@@ -71,7 +71,7 @@ namespace APIWizard.Extensions
             }
         }
 
-        private static void NormalizeAndAddInputToRequest(HttpRequestMessage request, ParameterBase[]? parameters, object inputData, string contentType, bool isBodyRequired)
+        internal static void NormalizeAndAddInputToRequest(HttpRequestMessage request, ParameterBase[]? parameters, object inputData, string contentType, bool isBodyRequired)
         {
             if (parameters == null)
             {
@@ -113,7 +113,7 @@ namespace APIWizard.Extensions
             request.SetCookie(cookieContainer);
         }
 
-        private static void ProcessBodyParameter(HttpRequestMessage request, object inputData, string contentType, bool isBodyRequired)
+        internal static void ProcessBodyParameter(HttpRequestMessage request, object inputData, string contentType, bool isBodyRequired)
         {
             var parameterValue = GetValueFromInputData(inputData, HttpClientDefaults.Body);
             if (isBodyRequired)
@@ -125,7 +125,7 @@ namespace APIWizard.Extensions
             request.Content = content;
         }
 
-        private static void ProcessFormDataParameter(HttpRequestMessage request, IEnumerable<ParameterBase> parameterGroup, object inputData, string contentType)
+        internal static void ProcessFormDataParameter(HttpRequestMessage request, IEnumerable<ParameterBase> parameterGroup, object inputData, string contentType)
         {
             var formDataValues = new List<(string Key, object? Value)>();
             foreach (var parameter in parameterGroup)
@@ -155,7 +155,7 @@ namespace APIWizard.Extensions
             request.Content = formData;
         }
 
-        private static void ReplacePathParameters(HttpRequestMessage request, IEnumerable<ParameterBase> parameters, object inputData)
+        internal static void ReplacePathParameters(HttpRequestMessage request, IEnumerable<ParameterBase> parameters, object inputData)
         {
             var originalUri = request.RequestUri?.ToString();
             if (originalUri != null && !originalUri.ContainsCurlyBraces())
@@ -178,7 +178,7 @@ namespace APIWizard.Extensions
             request.RequestUri = new Uri(originalUri ?? string.Empty);
         }
 
-        private static void AddQueryParameters(HttpRequestMessage request, IEnumerable<ParameterBase> parameters, object inputData)
+        internal static void AddQueryParameters(HttpRequestMessage request, IEnumerable<ParameterBase> parameters, object inputData)
         {
             var uriBuilder = new UriBuilder(request.RequestUri ?? new Uri(HttpClientDefaults.BlankUri));
             var query = uriBuilder.Query;
@@ -198,7 +198,7 @@ namespace APIWizard.Extensions
             request.RequestUri = uriBuilder.Uri;
         }
 
-        private static void AddHeaders(HttpRequestMessage request, IEnumerable<ParameterBase> parameters, object inputData)
+        internal static void AddHeaders(HttpRequestMessage request, IEnumerable<ParameterBase> parameters, object inputData)
         {
             foreach (var parameter in parameters)
             {
@@ -212,7 +212,7 @@ namespace APIWizard.Extensions
             }
         }
 
-        private static void AddCookies(HttpRequestMessage request, IEnumerable<ParameterBase> parameters, object inputData, CookieCollection cookieContainer)
+        internal static void AddCookies(HttpRequestMessage request, IEnumerable<ParameterBase> parameters, object inputData, CookieCollection cookieContainer)
         {
             foreach (var parameter in parameters)
             {
@@ -228,13 +228,13 @@ namespace APIWizard.Extensions
             request.SetCookie(cookieContainer);
         }
 
-        private static StringContent CreateStringContent(object inputData, string contentType)
+        internal static StringContent CreateStringContent(object inputData, string contentType)
         {
             var jsonInput = JsonConvert.SerializeObject(inputData);
             return new StringContent(jsonInput, Encoding.UTF8, contentType ?? ContentTypes.ApplicationJson);
         }
 
-        private static MultipartFormDataContent CreateMultipartFormDataContent(List<(string Key, object? Value)> formDataValues)
+        internal static MultipartFormDataContent CreateMultipartFormDataContent(List<(string Key, object? Value)> formDataValues)
         {
             var formData = new MultipartFormDataContent();
 
@@ -255,13 +255,13 @@ namespace APIWizard.Extensions
             return formData;
         }
 
-        private static FormUrlEncodedContent CreateFormUrlEncodedContent(List<(string Key, object? Value)> formDataValues)
+        internal static FormUrlEncodedContent CreateFormUrlEncodedContent(List<(string Key, object? Value)> formDataValues)
         {
             var formDataDictionary = formDataValues.ToDictionary(d => d.Key.ToString(), d => d.Value?.ToString());
             return new FormUrlEncodedContent(formDataDictionary);
         }
 
-        private static object? GetValueFromInputData(object inputData, string parameterName)
+        internal static object? GetValueFromInputData(object inputData, string parameterName)
         {
             if (inputData is IDictionary inputDict && inputDict.Contains(parameterName))
             {

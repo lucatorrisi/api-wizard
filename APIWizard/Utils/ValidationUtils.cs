@@ -31,10 +31,15 @@ namespace APIWizard.Utils
         /// <param name="message">The optional error message.</param>
         internal static void ArgumentNotNullOrEmpty([NotNull] string value, string parameterName, string message = null)
         {
-            if (string.IsNullOrEmpty(value))
+            if (value == null)
+            {
+                throw new ArgumentNullException(message, parameterName);
+            }
+            if (value == string.Empty)
             {
                 throw new ArgumentException(message, parameterName);
             }
+
         }
 
         /// <summary>

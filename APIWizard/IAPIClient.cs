@@ -2,6 +2,9 @@
 
 namespace APIWizard
 {
+    /// <summary>
+    /// Represents the interface for an API client used to send HTTP requests.
+    /// </summary>
     public interface IAPIClient
     {
         /// <summary>
