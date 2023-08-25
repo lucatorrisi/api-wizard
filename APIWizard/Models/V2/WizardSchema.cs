@@ -2,23 +2,37 @@
 using APIWizard.Extensions;
 using APIWizard.Models.Abstracts;
 using APIWizard.Models.Interfaces;
-using APIWizard.Models.V3;
 using APIWizard.Utils;
 using Newtonsoft.Json;
 
 namespace APIWizard.Models.V2
 {
+    /// <summary>
+    /// Represents a version 2 of the OpenAPI wizard schema.
+    /// </summary>
     internal class WizardSchema : WizardSchemaBase, IWizardSchema
     {
+        /// <summary>
+        /// Gets or sets the host of the API.
+        /// </summary>
         [JsonProperty("host")]
         internal string Host { get; set; }
+        /// <summary>
+        /// Gets or sets the base path of the API.
+        /// </summary>
         [JsonProperty("basePath")]
         internal string BasePath { get; set; }
+        /// <summary>
+        /// Gets or sets the supported schemes of the API.
+        /// </summary>
         [JsonProperty("schemes")]
         internal string[] Schemes { get; set; }
+        /// <summary>
+        /// Gets or sets the paths and their details for the API.
+        /// </summary>
         [JsonProperty("paths")]
         public Dictionary<string, Dictionary<string, PathDetail?>>? Paths { get; set; }
-
+        /// <inheritdoc/>
         public HttpRequestMessage? BuildRequest(string pathName, object? inputData, string method = null, string server = null)
         {
             ValidationUtils.ArgumentNotNull(pathName, nameof(pathName));
@@ -52,19 +66,19 @@ namespace APIWizard.Models.V2
 
             return request;
         }
-
+        /// <inheritdoc/>
         public void AddServers(List<string> servers)
         {
             ValidationUtils.ArgumentNotNull(servers, nameof(servers));
             if (servers.Any())
                 BasePath = servers.First();
         }
-
+        /// <inheritdoc/>
         internal override Uri GetUri(string route)
         {
             return new(HttpRequestUtils.CombineUri(Host, BasePath, route, Schemes));
         }
-
+        /// <inheritdoc/>
         internal override Uri GetUri(string server, string route)
         {
             return GetUri(route);

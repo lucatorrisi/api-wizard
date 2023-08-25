@@ -5,10 +5,6 @@ using APIWizard.Models.Interfaces;
 using APIWizard.Models.Response;
 using APIWizard.Utils;
 using Newtonsoft.Json;
-using System;
-using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace APIWizard
 {
@@ -30,27 +26,27 @@ namespace APIWizard
             httpClient = new HttpClient(handler);
             this.schema = schema;
         }
-
+        /// <inheritdoc/>
         public async Task<APIResponse> SendRequestAsync(string pathName, CancellationToken cancellationToken = default)
         {
             return await ExecuteRequestAsync(pathName, null, null, null, cancellationToken);
         }
-
+        /// <inheritdoc/>
         public async Task<APIResponse> SendRequestAsync(string pathName, object inputData, CancellationToken cancellationToken = default)
         {
             return await ExecuteRequestAsync(pathName, null, inputData, null, cancellationToken);
         }
-
+        /// <inheritdoc/>
         public async Task<APIResponse> SendRequestAsync(string pathName, string method, CancellationToken cancellationToken = default)
         {
             return await ExecuteRequestAsync(pathName, method, null, null, cancellationToken);
         }
-
+        /// <inheritdoc/>
         public async Task<APIResponse> SendRequestAsync(string pathName, string method, object inputData, CancellationToken cancellationToken = default)
         {
             return await ExecuteRequestAsync(pathName, method, inputData, null, cancellationToken);
         }
-
+        /// <inheritdoc/>
         public async Task<APIResponse> SendRequestAsync(string pathName, string method, object inputData, string server, CancellationToken cancellationToken = default)
         {
             return await ExecuteRequestAsync(pathName, method, inputData, server, cancellationToken);

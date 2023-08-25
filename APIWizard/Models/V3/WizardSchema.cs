@@ -6,14 +6,23 @@ using APIWizard.Utils;
 using Newtonsoft.Json;
 
 namespace APIWizard.Models.V3
-{
+{    /// <summary>
+     /// Represents a version 3 of the OpenAPI wizard schema.
+     /// </summary>
     internal class WizardSchema : WizardSchemaBase, IWizardSchema
     {
+        /// <summary>
+        /// Gets or sets the list of servers associated with the schema.
+        /// </summary>
         [JsonProperty("servers")]
         internal List<Server>? Servers { get; set; } = new List<Server>();
+
+        /// <summary>
+        /// Gets or sets the paths and their details in the schema.
+        /// </summary>
         [JsonProperty("paths")]
         public Dictionary<string, Dictionary<string, PathDetail?>>? Paths { get; set; }
-
+        /// <inheritdoc/>
         public HttpRequestMessage? BuildRequest(string pathName, object? inputData, string method = null, string server = null)
         {
             ValidationUtils.ArgumentNotNull(pathName, nameof(pathName));
@@ -49,7 +58,7 @@ namespace APIWizard.Models.V3
 
             return request;
         }
-
+        /// <inheritdoc/>
         public void AddServers(List<string> servers)
         {
             ValidationUtils.ArgumentNotNull(servers, nameof(servers));
@@ -58,12 +67,12 @@ namespace APIWizard.Models.V3
                 Url = s
             }));
         }
-
+        /// <inheritdoc/>
         internal override Uri GetUri(string route)
         {
             return new(HttpRequestUtils.CombineUri(Servers?.FirstOrDefault()?.Url, route));
         }
-
+        /// <inheritdoc/>
         internal override Uri GetUri(string? server, string route)
         {
             if (server == null)

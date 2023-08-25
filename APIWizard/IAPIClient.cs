@@ -11,7 +11,6 @@ namespace APIWizard
         /// <param name="cancellationToken">Cancellation token for cancelling the request.</param>
         /// <returns>An <see cref="APIResponse"/> representing the from an API call.</returns>
         Task<APIResponse> SendRequestAsync(string pathName, CancellationToken cancellationToken = default);
-
         /// <summary>
         /// Sends an HTTP request with input data to the specified API endpoint.
         /// </summary>
@@ -20,7 +19,6 @@ namespace APIWizard
         /// <param name="cancellationToken">Cancellation token for cancelling the request.</param>
         /// <returns>An <see cref="APIResponse"/> representing the from an API call.</returns>
         Task<APIResponse> SendRequestAsync(string pathName, object inputData, CancellationToken cancellationToken = default);
-
         /// <summary>
         /// Sends an HTTP request to the specified API endpoint using the specified HTTP method.
         /// </summary>
@@ -29,7 +27,6 @@ namespace APIWizard
         /// <param name="cancellationToken">Cancellation token for cancelling the request.</param>
         /// <returns>An <see cref="APIResponse"/> representing the from an API call.</returns>
         Task<APIResponse> SendRequestAsync(string pathName, string method, CancellationToken cancellationToken = default);
-
         /// <summary>
         /// Sends an HTTP request with input data to the specified API endpoint using the specified HTTP method.
         /// </summary>
@@ -39,7 +36,6 @@ namespace APIWizard
         /// <param name="cancellationToken">Cancellation token for cancelling the request.</param>
         /// <returns>An <see cref="APIResponse"/> representing the from an API call.</returns>
         Task<APIResponse> SendRequestAsync(string pathName, string method, object inputData, CancellationToken cancellationToken = default);
-
         /// <summary>
         /// Sends an HTTP request with input data to the specified API endpoint using the specified HTTP method and server URL.
         /// </summary>
@@ -50,7 +46,6 @@ namespace APIWizard
         /// <param name="cancellationToken">Cancellation token for cancelling the request.</param>
         /// <returns>An <see cref="APIResponse"/> representing the from an API call.</returns>
         Task<APIResponse> SendRequestAsync(string pathName, string method, object inputData, string server, CancellationToken cancellationToken = default);
-
 
     }
 }

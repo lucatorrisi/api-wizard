@@ -11,10 +11,9 @@ using APIWizard.Models.Configuration;
 using APIWizard.Utils;
 
 namespace APIWizard.Builders
-{
-    /// <summary>
-    /// Builder class for creating an instance of IAPIClient.
-    /// </summary>
+{    /// <summary>
+     /// Builder class for creating an instance of IAPIClient.
+     /// </summary>
     public class APIClientBuilder
     {
         private IWizardSchema? schema;
@@ -24,13 +23,12 @@ namespace APIWizard.Builders
         private string? jsonSchema;
 
         public APIWizardOptions options = new();
-
         /// <summary>
         /// Sets the configuration file path.
         /// </summary>
         /// <param name="path">The path to the configuration file.</param>
         /// <returns>The current APIClientBuilder instance.</returns>
-        public APIClientBuilder WithConfigurationFile(string path)
+        public APIClientBuilder WithOpenAPIConfigurationFile(string path)
         {
             ValidationUtils.ArgumentNotNullOrEmpty(path, nameof(path), ExceptionMessages.InvalidFilePath);
 
@@ -51,26 +49,24 @@ namespace APIWizard.Builders
                 throw new InvalidOperationException($"{ExceptionMessages.FailedReadConfigurationFile} {ex.Message}", ex);
             }
         }
-
         /// <summary>
         /// Sets the configuration section.
         /// </summary>
         /// <param name="section">The IConfigurationSection instance.</param>
         /// <returns>The current APIClientBuilder instance.</returns>
-        public APIClientBuilder WithConfiguration(IConfigurationSection section)
+        public APIClientBuilder WithOpenAPIConfiguration(IConfigurationSection section)
         {
             ValidationUtils.ArgumentNotNull(section, nameof(section), ExceptionMessages.ConfigurationSectionNull);
             configurationSection = section;
             configurationType = ConfigurationType.Section;
             return this;
         }
-
         /// <summary>
         /// Sets the OpenAPI URL configuration.
         /// </summary>
         /// <param name="jsonOpenApiUrl">The URL of the JSON Open API.</param>
         /// <returns>The current APIClientBuilder instance.</returns>
-        public APIClientBuilder WithOpenAPIUrlConfigurationAsync(string jsonOpenApiUrl)
+        public APIClientBuilder WithOpenAPIUrlConfiguration(string jsonOpenApiUrl)
         {
             ValidationUtils.ArgumentNotNullOrEmpty(jsonOpenApiUrl, nameof(jsonOpenApiUrl), ExceptionMessages.InvalidOpenAPIConfigurationUrl);
 
@@ -86,30 +82,26 @@ namespace APIWizard.Builders
                 throw new InvalidOperationException($"{ExceptionMessages.FailedRetrieveRemoteConfig} {ex.Message}", ex);
             }
         }
-
-
         /// <summary>
         /// Sets the OpenAPI version.
         /// </summary>
         /// <param name="openApiVersion">The OpenAPI version.</param>
         /// <returns>The current APIClientBuilder instance.</returns>
-        public APIClientBuilder WithVersion(OpenAPIVersion openApiVersion = OpenAPIVersion.V2)
+        public APIClientBuilder WithOpenAPIVersion(OpenAPIVersion openApiVersion = OpenAPIVersion.V2)
         {
             this.openApiVersion = openApiVersion;
             return this;
         }
-
         /// <summary>
         /// Sets additional options for the APIClient.
         /// </summary>
         /// <param name="action">An action to configure the options.</param>
         /// <returns>The current APIClientBuilder instance.</returns>
-        public APIClientBuilder WithOptions(Action<APIWizardOptions> action)
+        public APIClientBuilder WithClientOptions(Action<APIWizardOptions> action)
         {
             action(options);
             return this;
         }
-
         /// <summary>
         /// Builds an instance of IAPIClient.
         /// </summary>

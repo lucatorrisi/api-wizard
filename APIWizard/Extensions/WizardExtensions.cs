@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.Collections;
 using System.Net;
-using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using APIWizard.Constants;
@@ -15,8 +11,20 @@ using Newtonsoft.Json;
 
 namespace APIWizard.Extensions
 {
+    /// <summary>
+    /// Provides extension methods for working with API requests.
+    /// </summary>
     internal static class WizardExtensions
     {
+        /// <summary>
+        /// Adds input data to an HTTP request message.
+        /// </summary>
+        /// <param name="httpRequestMessage">The HTTP request message.</param>
+        /// <param name="inputData">The input data to be added.</param>
+        /// <param name="contentType">The content type of the input data.</param>
+        /// <param name="parameters">Array of parameters for the request.</param>
+        /// <param name="isBodyRequired">Indicates if the request body is required.</param>
+        /// <returns>The modified HTTP request message.</returns>
         internal static HttpRequestMessage AddInputData(
             this HttpRequestMessage httpRequestMessage,
             object? inputData = null,
