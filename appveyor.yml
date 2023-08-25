@@ -1,4 +1,4 @@
-version: 1.3.0
+version: 1.4.0
 
 branches:
   only:
@@ -16,6 +16,7 @@ before_build:
 
 build_script:
  - cmd: dotnet build APIWizard /p:AssemblyVersion=%appveyor_build_version% /p:InformationalVersion=%appveyor_build_version%
+ - cmd: dotnet test APIWizard.Tests /p:AssemblyVersion=%appveyor_build_version% /p:InformationalVersion=%appveyor_build_version%
  - cmd: dotnet pack APIWizard /p:AssemblyVersion=%appveyor_build_version% /p:InformationalVersion=%appveyor_build_version% /p:PackageVersion=%appveyor_build_version% 
  
 artifacts:

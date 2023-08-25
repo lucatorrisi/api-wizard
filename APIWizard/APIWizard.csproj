@@ -4,7 +4,7 @@
 		<TargetFramework>net7.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
-		<Version>1.3.0</Version>
+		<Version>1.4.0</Version>
 		<Company></Company>
 		<Description>APIWizard is a .NET 7 NuGet package that simplifies the process of creating a customized HTTP client for making HTTP calls to third-party services. It allows you to configure the client through various sources, making API integration easier and more flexible.</Description>
 		<PackageProjectUrl>https://github.com/lucatorrisi/api-wizard</PackageProjectUrl>
