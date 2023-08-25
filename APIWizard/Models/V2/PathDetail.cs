@@ -12,7 +12,7 @@ namespace APIWizard.Models.V2
         [JsonProperty("parameters")]
         public Parameter[]? Parameters { get; set; }
 
-        private Parameter? BodyParameter => Parameters?.FirstOrDefault(p => p.In == Enums.ParameterType.Body);
+        private Parameter? BodyParameter => Parameters?.FirstOrDefault(p => p.In == ParameterType.Body);
 
         internal override string? GetContentType()
         {
@@ -28,12 +28,15 @@ namespace APIWizard.Models.V2
         }
         internal override void AddDummyBodyParam()
         {
-            Parameters?.Add(new Parameter
+            if (HasBodyParameter())
             {
-                In = ParameterType.Body,
-                Required = IsBodyRequired()
+                Parameters?.Add(new Parameter
+                {
+                    In = ParameterType.Body,
+                    Required = IsBodyRequired()
 
-            });
+                });
+            }
         }
     }
 }

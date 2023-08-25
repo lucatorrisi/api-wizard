@@ -31,57 +31,36 @@ namespace APIWizard
             this.schema = schema;
         }
 
-        public async Task<APIResponse<TResult>> SendRequestAsync<TResult>(string pathName, CancellationToken cancellationToken = default)
+        public async Task<APIResponse> SendRequestAsync(string pathName, CancellationToken cancellationToken = default)
         {
-            return await ExecuteRequestAsync<TResult>(pathName, null, null, null, default, cancellationToken: cancellationToken);
+            return await ExecuteRequestAsync(pathName, null, null, null, cancellationToken);
         }
 
-        public async Task<APIResponse<TResult>> SendRequestAsync<TResult>(string pathName, object inputData, CancellationToken cancellationToken = default)
+        public async Task<APIResponse> SendRequestAsync(string pathName, object inputData, CancellationToken cancellationToken = default)
         {
-            return await ExecuteRequestAsync<TResult>(pathName, null, inputData, null, default, cancellationToken: cancellationToken);
+            return await ExecuteRequestAsync(pathName, null, inputData, null, cancellationToken);
         }
 
-        public async Task<APIResponse<TResult>> SendRequestAsync<TResult>(string pathName, TResult defaultResult, CancellationToken cancellationToken = default)
+        public async Task<APIResponse> SendRequestAsync(string pathName, string method, CancellationToken cancellationToken = default)
         {
-            return await ExecuteRequestAsync(pathName, null, null, null, defaultResult, cancellationToken: cancellationToken);
+            return await ExecuteRequestAsync(pathName, method, null, null, cancellationToken);
         }
 
-        public async Task<APIResponse<TResult>> SendRequestAsync<TResult>(string pathName, string method, CancellationToken cancellationToken = default)
+        public async Task<APIResponse> SendRequestAsync(string pathName, string method, object inputData, CancellationToken cancellationToken = default)
         {
-            return await ExecuteRequestAsync<TResult>(pathName, method, null, null, default, cancellationToken: cancellationToken);
+            return await ExecuteRequestAsync(pathName, method, inputData, null, cancellationToken);
         }
 
-        public async Task<APIResponse<TResult>> SendRequestAsync<TResult>(string pathName, string method, TResult defaultResult, CancellationToken cancellationToken = default)
+        public async Task<APIResponse> SendRequestAsync(string pathName, string method, object inputData, string server, CancellationToken cancellationToken = default)
         {
-            return await ExecuteRequestAsync(pathName, method, null, null, defaultResult, cancellationToken: cancellationToken);
+            return await ExecuteRequestAsync(pathName, method, inputData, server, cancellationToken);
         }
 
-        public async Task<APIResponse<TResult>> SendRequestAsync<TResult>(string pathName, string method, object inputData, CancellationToken cancellationToken = default)
-        {
-            return await ExecuteRequestAsync<TResult>(pathName, method, inputData, null, default, cancellationToken: cancellationToken);
-        }
-
-        public async Task<APIResponse<TResult>> SendRequestAsync<TResult>(string pathName, string method, object inputData, TResult defaultResult, CancellationToken cancellationToken = default)
-        {
-            return await ExecuteRequestAsync(pathName, method, inputData, null, defaultResult, cancellationToken: cancellationToken);
-        }
-
-        public async Task<APIResponse<TResult>> SendRequestAsync<TResult>(string pathName, string method, object inputData, string server, CancellationToken cancellationToken = default)
-        {
-            return await ExecuteRequestAsync<TResult>(pathName, method, inputData, server, default, cancellationToken: cancellationToken);
-        }
-
-        public async Task<APIResponse<TResult>> SendRequestAsync<TResult>(string pathName, string method, object inputData, string server, TResult defaultResult, CancellationToken cancellationToken = default)
-        {
-            return await ExecuteRequestAsync(pathName, method, inputData, server, defaultResult, cancellationToken: cancellationToken);
-        }
-
-        private async Task<APIResponse<TResult>> ExecuteRequestAsync<TResult>(
+        private async Task<APIResponse> ExecuteRequestAsync(
             string pathName,
             string method,
             object? inputData,
             string? server,
-            TResult? defaultValue = default,
             CancellationToken cancellationToken = default)
         {
             ValidationUtils.ArgumentNotNullOrEmpty(pathName, nameof(pathName), ExceptionMessages.InvalidPathName);
@@ -97,7 +76,7 @@ namespace APIWizard
             try
             {
                 var response = await httpClient.SendAsync(requestMessage, cancellationToken);
-                return await HandleResponseAsync(response, defaultValue, cancellationToken);
+                return await HandleResponseAsync(response, cancellationToken);
             }
             catch (HttpRequestException ex)
             {
@@ -106,18 +85,18 @@ namespace APIWizard
         }
 
 
-        private static async Task<APIResponse<TResult>> HandleResponseAsync<TResult>(HttpResponseMessage response, TResult defaultValue, CancellationToken cancellationToken)
+        private static async Task<APIResponse> HandleResponseAsync(HttpResponseMessage response, CancellationToken cancellationToken)
         {
             var jsonResponse = await response.Content.ReadAsStringAsync(cancellationToken);
 
             if (response.IsSuccessStatusCode)
             {
-                var content = JsonConvert.DeserializeObject<TResult>(jsonResponse) ?? defaultValue;
-                return new APIResponse<TResult>(response, content);
+                var content = JsonConvert.DeserializeObject(jsonResponse);
+                return new APIResponse(response, content);
             }
             else
             {
-                return new APIResponse<TResult>(response, defaultValue);
+                return new APIResponse(response);
             }
         }
     }

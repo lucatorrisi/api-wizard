@@ -44,7 +44,7 @@ namespace APIWizard.Models.V3
 
                 request = new HttpRequestMessage(
                 HttpRequestUtils.ConvertToHttpMethod(method), GetUri(server, pathName))
-                .AddInputData(inputData, pathDetail?.GetContentType(), pathDetail?.Parameters, pathDetail?.IsBodyRequired() ?? false);
+                .AddInputData(inputData, pathDetail?.GetContentType(), pathDetail?.Parameters, pathDetail.IsBodyRequired());
             }
 
             return request;

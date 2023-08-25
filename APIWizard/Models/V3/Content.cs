@@ -1,14 +1,14 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace APIWizard.Models.V3
 {
     internal class Content
     {
-        internal string Type { get; set; }
+        [JsonExtensionData]
+        private readonly Dictionary<string, JToken>? _contentTypeData = new();
 
-        [JsonProperty("application/json")]
-        [ConfigurationKeyName("application/json")]
-        private object ApplicationJson { get { return default; } set { Type = "application/json"; } }
+        internal string[]? Types => _contentTypeData?.Keys.ToArray();
     }
 }

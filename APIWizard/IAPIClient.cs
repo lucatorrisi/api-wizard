@@ -5,111 +5,52 @@ namespace APIWizard
     public interface IAPIClient
     {
         /// <summary>
-        /// Sends an HTTP GET request and returns the deserialized API response of the specified type.
+        /// Sends an HTTP GET request to the specified API endpoint.
         /// </summary>
-        /// <typeparam name="TResult">The type of the result to deserialize the response to.</typeparam>
-        /// <param name="pathName">The API endpoint path.</param>
-        /// <param name="cancellationToken">A cancellation token to cancel the request.</param>
-        /// <returns>An <see cref="APIResponse{TResult}"/> containing the deserialized response of type TResult.</returns>
-        /// <exception cref="ArgumentNullException">Thrown when pathName is null.</exception>
-        Task<APIResponse<TResult>> SendRequestAsync<TResult>(string pathName, CancellationToken cancellationToken = default);
+        /// <param name="pathName">The API endpoint path name.</param>
+        /// <param name="cancellationToken">Cancellation token for cancelling the request.</param>
+        /// <returns>An <see cref="APIResponse"/> representing the from an API call.</returns>
+        Task<APIResponse> SendRequestAsync(string pathName, CancellationToken cancellationToken = default);
 
         /// <summary>
-        /// Sends an HTTP GET request with the specified input data and returns the deserialized API response of the specified type.
+        /// Sends an HTTP request with input data to the specified API endpoint.
         /// </summary>
-        /// <typeparam name="TResult">The type of the result to deserialize the response to.</typeparam>
-        /// <param name="pathName">The API endpoint path.</param>
-        /// <param name="inputData">The input data (if any).</param>
-        /// <param name="cancellationToken">A cancellation token to cancel the request.</param>
-        /// <returns>An <see cref="APIResponse{TResult}"/> containing the deserialized response of type TResult.</returns>
-        /// <exception cref="ArgumentNullException">Thrown when pathName is null.</exception>
-        Task<APIResponse<TResult>> SendRequestAsync<TResult>(string pathName, object inputData, CancellationToken cancellationToken = default);
+        /// <param name="pathName">The API endpoint path name.</param>
+        /// <param name="inputData">The input data to send in the request body.</param>
+        /// <param name="cancellationToken">Cancellation token for cancelling the request.</param>
+        /// <returns>An <see cref="APIResponse"/> representing the from an API call.</returns>
+        Task<APIResponse> SendRequestAsync(string pathName, object inputData, CancellationToken cancellationToken = default);
 
         /// <summary>
-        /// Sends an HTTP GET request and returns the deserialized API response of the specified type with a default result.
+        /// Sends an HTTP request to the specified API endpoint using the specified HTTP method.
         /// </summary>
-        /// <typeparam name="TResult">The type of the result to deserialize the response to.</typeparam>
-        /// <param name="pathName">The API endpoint path.</param>
-        /// <param name="defaultResult">The default result if deserialization fails or the response is empty.</param>
-        /// <param name="cancellationToken">A cancellation token to cancel the request.</param>
-        /// <returns>An <see cref="APIResponse{TResult}"/> containing the deserialized response of type TResult, or the default result if deserialization fails or the response is empty.</returns>
-        /// <exception cref="ArgumentNullException">Thrown when pathName is null.</exception>
-        Task<APIResponse<TResult>> SendRequestAsync<TResult>(string pathName, TResult defaultResult, CancellationToken cancellationToken = default);
+        /// <param name="pathName">The API endpoint path name.</param>
+        /// <param name="method">The HTTP method to use for the request.</param>
+        /// <param name="cancellationToken">Cancellation token for cancelling the request.</param>
+        /// <returns>An <see cref="APIResponse"/> representing the from an API call.</returns>
+        Task<APIResponse> SendRequestAsync(string pathName, string method, CancellationToken cancellationToken = default);
 
         /// <summary>
-        /// Sends an HTTP request with the specified method and returns the deserialized API response of the specified type.
+        /// Sends an HTTP request with input data to the specified API endpoint using the specified HTTP method.
         /// </summary>
-        /// <typeparam name="TResult">The type of the result to deserialize the response to.</typeparam>
-        /// <param name="pathName">The API endpoint path.</param>
-        /// <param name="method">The HTTP method for the request.</param>
-        /// <param name="cancellationToken">A cancellation token to cancel the request.</param>
-        /// <returns>An <see cref="APIResponse{TResult}"/> containing the deserialized response of type TResult.</returns>
-        /// <exception cref="ArgumentNullException">Thrown when pathName or method is null.</exception>
-        Task<APIResponse<TResult>> SendRequestAsync<TResult>(string pathName, string method, CancellationToken cancellationToken = default);
+        /// <param name="pathName">The API endpoint path name.</param>
+        /// <param name="method">The HTTP method to use for the request.</param>
+        /// <param name="inputData">The input data to send in the request body.</param>
+        /// <param name="cancellationToken">Cancellation token for cancelling the request.</param>
+        /// <returns>An <see cref="APIResponse"/> representing the from an API call.</returns>
+        Task<APIResponse> SendRequestAsync(string pathName, string method, object inputData, CancellationToken cancellationToken = default);
 
         /// <summary>
-        /// Sends an HTTP request with the specified method and returns the deserialized API response of the specified type with a default result.
+        /// Sends an HTTP request with input data to the specified API endpoint using the specified HTTP method and server URL.
         /// </summary>
-        /// <typeparam name="TResult">The type of the result to deserialize the response to.</typeparam>
-        /// <param name="pathName">The API endpoint path.</param>
-        /// <param name="method">The HTTP method for the request.</param>
-        /// <param name="defaultResult">The default result if deserialization fails or the response is empty.</param>
-        /// <param name="cancellationToken">A cancellation token to cancel the request.</param>
-        /// <returns>An <see cref="APIResponse{TResult}"/> containing the deserialized response of type TResult, or the default result if deserialization fails or the response is empty.</returns>
-        /// <exception cref="ArgumentNullException">Thrown when pathName or method is null.</exception>
-        Task<APIResponse<TResult>> SendRequestAsync<TResult>(string pathName, string method, TResult defaultResult, CancellationToken cancellationToken = default);
+        /// <param name="pathName">The API endpoint path name.</param>
+        /// <param name="method">The HTTP method to use for the request.</param>
+        /// <param name="inputData">The input data to send in the request body.</param>
+        /// <param name="server">The server URL to send the request to.</param>
+        /// <param name="cancellationToken">Cancellation token for cancelling the request.</param>
+        /// <returns>An <see cref="APIResponse"/> representing the from an API call.</returns>
+        Task<APIResponse> SendRequestAsync(string pathName, string method, object inputData, string server, CancellationToken cancellationToken = default);
 
-        /// <summary>
-        /// Sends an HTTP request with the specified method and input data, and returns the deserialized API response of the specified type.
-        /// </summary>
-        /// <typeparam name="TResult">The type of the result to deserialize the response to.</typeparam>
-        /// <param name="pathName">The API endpoint path.</param>
-        /// <param name="method">The HTTP method for the request.</param>
-        /// <param name="inputData">The input data (if any).</param>
-        /// <param name="cancellationToken">A cancellation token to cancel the request.</param>
-        /// <returns>An <see cref="APIResponse{TResult}"/> containing the deserialized response of type TResult.</returns>
-        /// <exception cref="ArgumentNullException">Thrown when pathName or method is null.</exception>
-        Task<APIResponse<TResult>> SendRequestAsync<TResult>(string pathName, string method, object inputData, CancellationToken cancellationToken = default);
-
-        /// <summary>
-        /// Sends an HTTP request with the specified method, input data, and returns the deserialized API response of the specified type with a default result.
-        /// </summary>
-        /// <typeparam name="TResult">The type of the result to deserialize the response to.</typeparam>
-        /// <param name="pathName">The API endpoint path.</param>
-        /// <param name="method">The HTTP method for the request.</param>
-        /// <param name="inputData">The input data (if any).</param>
-        /// <param name="defaultResult">The default result if deserialization fails or the response is empty.</param>
-        /// <param name="cancellationToken">A cancellation token to cancel the request.</param>
-        /// <returns>An <see cref="APIResponse{TResult}"/> containing the deserialized response of type TResult, or the default result if deserialization fails or the response is empty.</returns>
-        /// <exception cref="ArgumentNullException">Thrown when pathName or method is null.</exception>
-        Task<APIResponse<TResult>> SendRequestAsync<TResult>(string pathName, string method, object inputData, TResult defaultResult, CancellationToken cancellationToken = default);
-
-        /// <summary>
-        /// Sends an HTTP request with the specified method, input data, server address, and returns the deserialized API response of the specified type.
-        /// </summary>
-        /// <typeparam name="TResult">The type of the result to deserialize the response to.</typeparam>
-        /// <param name="pathName">The API endpoint path.</param>
-        /// <param name="method">The HTTP method for the request.</param>
-        /// <param name="inputData">The input data (if any).</param>
-        /// <param name="server">The server address (optional).</param>
-        /// <param name="cancellationToken">A cancellation token to cancel the request.</param>
-        /// <returns>An <see cref="APIResponse{TResult}"/> containing the deserialized response of type TResult.</returns>
-        /// <exception cref="ArgumentNullException">Thrown when pathName or method is null.</exception>
-        Task<APIResponse<TResult>> SendRequestAsync<TResult>(string pathName, string method, object inputData, string server, CancellationToken cancellationToken = default);
-
-        /// <summary>
-        /// Sends an HTTP request with the specified method, input data, server address, and returns the deserialized API response of the specified type with a default result.
-        /// </summary>
-        /// <typeparam name="TResult">The type of the result to deserialize the response to.</typeparam>
-        /// <param name="pathName">The API endpoint path.</param>
-        /// <param name="method">The HTTP method for the request.</param>
-        /// <param name="inputData">The input data (if any).</param>
-        /// <param name="server">The server address (optional).</param>
-        /// <param name="defaultResult">The default result if deserialization fails or the response is empty.</param>
-        /// <param name="cancellationToken">A cancellation token to cancel the request.</param>
-        /// <returns>An <see cref="APIResponse{TResult}"/> containing the deserialized response of type TResult, or the default result if deserialization fails or the response is empty.</returns>
-        /// <exception cref="ArgumentNullException">Thrown when pathName or method is null.</exception>
-        Task<APIResponse<TResult>> SendRequestAsync<TResult>(string pathName, string method, object inputData, string server, TResult defaultResult, CancellationToken cancellationToken = default);
 
     }
 }

@@ -14,7 +14,7 @@ namespace APIWizard.Models.V3
 
         internal override string? GetContentType()
         {
-            return RequestBody?.Content?.Type;
+            return RequestBody?.Content?.Types?.FirstOrDefault();
         }
         internal override bool HasBodyParameter()
         {
