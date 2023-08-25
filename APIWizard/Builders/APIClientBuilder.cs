@@ -9,6 +9,7 @@ using APIWizard.Enums;
 using APIWizard.Models.Interfaces;
 using APIWizard.Models.Configuration;
 using APIWizard.Utils;
+using Newtonsoft.Json.Linq;
 
 namespace APIWizard.Builders
 {    /// <summary>
@@ -18,7 +19,6 @@ namespace APIWizard.Builders
     {
         private IWizardSchema? schema;
         private IConfigurationSection? configurationSection;
-        private OpenAPIVersion openApiVersion;
         private ConfigurationType configurationType;
         private string? jsonSchema;
 
@@ -83,16 +83,6 @@ namespace APIWizard.Builders
             }
         }
         /// <summary>
-        /// Sets the OpenAPI version.
-        /// </summary>
-        /// <param name="openApiVersion">The OpenAPI version.</param>
-        /// <returns>The current APIClientBuilder instance.</returns>
-        public APIClientBuilder WithOpenAPIVersion(OpenAPIVersion openApiVersion = OpenAPIVersion.V2)
-        {
-            this.openApiVersion = openApiVersion;
-            return this;
-        }
-        /// <summary>
         /// Sets additional options for the APIClient.
         /// </summary>
         /// <param name="action">An action to configure the options.</param>
@@ -110,7 +100,7 @@ namespace APIWizard.Builders
         {
             if (configurationType == ConfigurationType.Json && !string.IsNullOrEmpty(jsonSchema))
             {
-                schema = openApiVersion switch
+                schema = OpenAPIUtils.GetOpenAPIVersion(jsonSchema) switch
                 {
                     OpenAPIVersion.V2 => DeserializeSchemaFromJson<Models.V2.WizardSchema>(jsonSchema),
                     OpenAPIVersion.V3 => DeserializeSchemaFromJson<Models.V3.WizardSchema>(jsonSchema),
@@ -119,7 +109,7 @@ namespace APIWizard.Builders
             }
             else if (configurationType == ConfigurationType.Section && configurationSection != null)
             {
-                schema = openApiVersion switch
+                schema = OpenAPIUtils.GetOpenAPIVersion(configurationSection) switch
                 {
                     OpenAPIVersion.V2 => DeserializeSchemaFromSection<Models.V2.WizardSchema>(configurationSection),
                     OpenAPIVersion.V3 => DeserializeSchemaFromSection<Models.V3.WizardSchema>(configurationSection),
