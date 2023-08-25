@@ -17,21 +17,25 @@ namespace APIWizard.Models.V2
         /// </summary>
         [JsonProperty("host")]
         internal string Host { get; set; }
+        
         /// <summary>
         /// Gets or sets the base path of the API.
         /// </summary>
         [JsonProperty("basePath")]
         internal string BasePath { get; set; }
+        
         /// <summary>
         /// Gets or sets the supported schemes of the API.
         /// </summary>
         [JsonProperty("schemes")]
         internal string[] Schemes { get; set; }
+        
         /// <summary>
         /// Gets or sets the paths and their details for the API.
         /// </summary>
         [JsonProperty("paths")]
         public Dictionary<string, Dictionary<string, PathDetail?>>? Paths { get; set; }
+        
         /// <inheritdoc/>
         public HttpRequestMessage? BuildRequest(string pathName, object? inputData, string method = null, string server = null)
         {
@@ -66,6 +70,7 @@ namespace APIWizard.Models.V2
 
             return request;
         }
+        
         /// <inheritdoc/>
         public void AddServers(List<string> servers)
         {
@@ -73,11 +78,13 @@ namespace APIWizard.Models.V2
             if (servers.Any())
                 BasePath = servers.First();
         }
+        
         /// <inheritdoc/>
         internal override Uri GetUri(string route)
         {
             return new(HttpRequestUtils.CombineUri(Host, BasePath, route, Schemes));
         }
+        
         /// <inheritdoc/>
         internal override Uri GetUri(string server, string route)
         {

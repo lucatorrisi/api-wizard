@@ -9,10 +9,12 @@
         ///No OpenAPI version.
         /// </summary>
         None,
+
         /// <summary>
         /// Represents OpenAPI version 2.
         /// </summary>
         V2,
+
         /// <summary>
         /// Represents OpenAPI version 3.
         /// </summary>

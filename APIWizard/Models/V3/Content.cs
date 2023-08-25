@@ -13,6 +13,7 @@ namespace APIWizard.Models.V3
         /// </summary>
         [JsonExtensionData]
         private readonly Dictionary<string, JToken>? _contentTypeData = new();
+        
         /// <summary>
         /// Gets the array of supported content types.
         /// </summary>

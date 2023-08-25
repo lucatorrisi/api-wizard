@@ -22,6 +22,7 @@ namespace APIWizard.Models.V3
         /// </summary>
         [JsonProperty("paths")]
         public Dictionary<string, Dictionary<string, PathDetail?>>? Paths { get; set; }
+        
         /// <inheritdoc/>
         public HttpRequestMessage? BuildRequest(string pathName, object? inputData, string method = null, string server = null)
         {
@@ -58,6 +59,7 @@ namespace APIWizard.Models.V3
 
             return request;
         }
+        
         /// <inheritdoc/>
         public void AddServers(List<string> servers)
         {
@@ -67,11 +69,13 @@ namespace APIWizard.Models.V3
                 Url = s
             }));
         }
+        
         /// <inheritdoc/>
         internal override Uri GetUri(string route)
         {
             return new(HttpRequestUtils.CombineUri(Servers?.FirstOrDefault()?.Url, route));
         }
+        
         /// <inheritdoc/>
         internal override Uri GetUri(string? server, string route)
         {

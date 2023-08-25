@@ -12,9 +12,10 @@ using APIWizard.Utils;
 using Newtonsoft.Json.Linq;
 
 namespace APIWizard.Builders
-{    /// <summary>
-     /// Builder class for creating an instance of IAPIClient.
-     /// </summary>
+{    
+    /// <summary>
+    /// Builder class for creating an instance of IAPIClient.
+    /// </summary>
     public class APIClientBuilder
     {
         private IWizardSchema? schema;
@@ -23,6 +24,7 @@ namespace APIWizard.Builders
         private string? jsonSchema;
 
         public APIWizardOptions options = new();
+        
         /// <summary>
         /// Sets the configuration file path.
         /// </summary>
@@ -49,6 +51,7 @@ namespace APIWizard.Builders
                 throw new InvalidOperationException($"{ExceptionMessages.FailedReadConfigurationFile} {ex.Message}", ex);
             }
         }
+
         /// <summary>
         /// Sets the configuration section.
         /// </summary>
@@ -61,6 +64,7 @@ namespace APIWizard.Builders
             configurationType = ConfigurationType.Section;
             return this;
         }
+
         /// <summary>
         /// Sets the OpenAPI URL configuration.
         /// </summary>
@@ -82,6 +86,7 @@ namespace APIWizard.Builders
                 throw new InvalidOperationException($"{ExceptionMessages.FailedRetrieveRemoteConfig} {ex.Message}", ex);
             }
         }
+        
         /// <summary>
         /// Sets additional options for the APIClient.
         /// </summary>
@@ -92,6 +97,7 @@ namespace APIWizard.Builders
             action(options);
             return this;
         }
+        
         /// <summary>
         /// Builds an instance of IAPIClient.
         /// </summary>
@@ -127,7 +133,6 @@ namespace APIWizard.Builders
                 ? new APIClient(options, schema)
                 : throw new InvalidOperationException(ExceptionMessages.SchemaIsNull);
         }
-
 
         private static T DeserializeSchemaFromJson<T>(string json) where T : IWizardSchema
         {

@@ -17,6 +17,7 @@ namespace APIWizard.Utils
             ValidationUtils.ArgumentNotNullOrEmpty(method, nameof(method));
             return new HttpMethod(method);
         }
+        
         /// <summary>
         /// Combines host, base path, route, and schemes to create a complete URI.
         /// </summary>
@@ -32,6 +33,7 @@ namespace APIWizard.Utils
 
             return combinedUrl;
         }
+        
         /// <summary>
         /// Combines a server and a route to create a complete URI.
         /// </summary>
@@ -45,6 +47,7 @@ namespace APIWizard.Utils
 
             return $"{server.Trim()}/{route.Trim('/')}";
         }
+        
         /// <summary>
         /// Determines the preferred scheme based on the provided schemes collection.
         /// </summary>

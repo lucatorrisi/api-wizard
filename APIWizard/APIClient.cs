@@ -26,26 +26,31 @@ namespace APIWizard
             httpClient = new HttpClient(handler);
             this.schema = schema;
         }
+        
         /// <inheritdoc/>
         public async Task<APIResponse> SendRequestAsync(string pathName, CancellationToken cancellationToken = default)
         {
             return await ExecuteRequestAsync(pathName, null, null, null, cancellationToken);
         }
+        
         /// <inheritdoc/>
         public async Task<APIResponse> SendRequestAsync(string pathName, object inputData, CancellationToken cancellationToken = default)
         {
             return await ExecuteRequestAsync(pathName, null, inputData, null, cancellationToken);
         }
+        
         /// <inheritdoc/>
         public async Task<APIResponse> SendRequestAsync(string pathName, string method, CancellationToken cancellationToken = default)
         {
             return await ExecuteRequestAsync(pathName, method, null, null, cancellationToken);
         }
+        
         /// <inheritdoc/>
         public async Task<APIResponse> SendRequestAsync(string pathName, string method, object inputData, CancellationToken cancellationToken = default)
         {
             return await ExecuteRequestAsync(pathName, method, inputData, null, cancellationToken);
         }
+        
         /// <inheritdoc/>
         public async Task<APIResponse> SendRequestAsync(string pathName, string method, object inputData, string server, CancellationToken cancellationToken = default)
         {

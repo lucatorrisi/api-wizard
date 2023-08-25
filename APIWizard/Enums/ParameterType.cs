@@ -23,18 +23,22 @@ namespace APIWizard.Enums
         /// Parameter appears in the form data of the request.
         /// </summary>
         FormData,
+
         /// <summary>
         /// Parameter is part of the URL path.
         /// </summary>
         Path,
+
         /// <summary>
         /// Parameter appears as a query parameter.
         /// </summary>
         Query,
+
         /// <summary>
         /// Parameter appears in the request header.
         /// </summary>
         Header,
+
         /// <summary>
         /// Parameter appears as a cookie.
         /// </summary>

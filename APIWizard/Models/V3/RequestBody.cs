@@ -12,6 +12,7 @@ namespace APIWizard.Models.V3
         /// </summary>
         [JsonProperty("required")]
         internal bool Required { get; set; }
+        
         /// <summary>
         /// Gets or sets the content information for the request body.
         /// </summary>

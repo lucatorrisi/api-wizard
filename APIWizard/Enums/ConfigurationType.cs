@@ -9,10 +9,12 @@
         /// No configuration type.
         /// </summary>
         None,
+
         /// <summary>
         /// Configuration section.
         /// </summary>
         Section,
+
         /// <summary>
         /// JSON configuration.
         /// </summary>

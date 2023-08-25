@@ -15,6 +15,7 @@ namespace APIWizard.Models.V3
         /// </summary>
         [JsonProperty("parameters")]
         public Parameter[]? Parameters { get; set; }
+        
         /// <summary>
         /// Gets or sets the request body information associated with the path.
         /// </summary>
@@ -26,16 +27,19 @@ namespace APIWizard.Models.V3
         {
             return RequestBody?.Content?.Types?.FirstOrDefault();
         }
+        
         /// <inheritdoc/>
         internal override bool HasBodyParameter()
         {
             return RequestBody != null;
         }
+        
         /// <inheritdoc/>
         internal override bool IsBodyRequired()
         {
             return HasBodyParameter() && RequestBody.Required;
         }
+        
         /// <inheritdoc/>
         internal override void AddDummyBodyParam()
         {
