@@ -29,16 +29,16 @@ dotnet add package APIWizard
 With a Local JSON Definition
 ```csharp
 var apiClient = new APIClientBuilder()
-    .WithConfigurationFile("schema.json")
-    .WithVersion(OpenAPIVersion.V2)
+    .WithOpenAPIConfigurationFile("schema.json")
+    .WithOpenAPIVersion(OpenAPIVersion.V2)
     .Build();
 ```
 With an IConfigurationSection
 ```csharp
 var apiClient = new APIClientBuilder()
-    .WithConfiguration(builder.Configuration.GetSection("APIWizard"))
-    .WithVersion(OpenAPIVersion.V2)
-    .WithOptions(options =>
+    .WithOpenAPIConfiguration(builder.Configuration.GetSection("APIWizard"))
+    .WithOpenAPIVersion(OpenAPIVersion.V2)
+    .WithClientOptions(options =>
     {
         // Specify technical options
         options.PooledConnectionLifetime = TimeSpan.FromMinutes(2);
@@ -49,7 +49,7 @@ With Remote JSON OpenAPI Configuration
 ```csharp
 var apiClient = new APIClientBuilder()
     .WithOpenAPIUrlConfiguration("https://raw.githubusercontent.com/OAI/OpenAPI-Specification/main/examples/v3.0/petstore-expanded.json")
-    .WithVersion(OpenAPIVersion.V3)
+    .WithOpenAPIVersion(OpenAPIVersion.V3)
     .Build();
 ```
 #### Dependency Injection for ASP.NET Core Apps
@@ -59,7 +59,7 @@ builder.Services.AddAPIWizardClient(apiClient);
 
 #### Usage
 ```csharp
-var sampleResponse = await apiClient.DoRequestAsync<Inventory>("/store/inventory", CancellationToken.None);
+var sampleResponse = await apiClient.DoRequestAsync("/store/inventory", CancellationToken.None);
 ```
 
 #### Configuration Example (or URL to an OpenAPI json)
